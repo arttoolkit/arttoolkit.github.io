@@ -1,5 +1,5 @@
 ---
-title: WADComs
+title: ARTToolkit
 
 exclude: ['/scripts', '/Gemfile', '/Makefile', '/README.md']
 

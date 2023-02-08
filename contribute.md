@@ -62,8 +62,8 @@ Before sending a pull request of a new command, ensure the following:
 Pull requests adding new items in [`_data/items.yml`], services in [`_data/services.yml`], OS in [`_data/OS.yml`], or attack types in [`_data/attack_types.yml`] are allowed and subjected to project maintainers vetting.
 
 [YAML]: http://yaml.org/
-[`_wadcoms/`]: https://github.com/WADComs/WADComs.github.io/tree/master/_wadcoms
-[`_data/services.yml`]: https://github.com/WADComs/WADComs.github.io/blob/master/_data/services.yml
-[`_data/items.yml`]: https://github.com/WADComs/WADComs.github.io/blob/master/_data/items.yml
-[`_data/OS.yml`]: https://github.com/WADComs/WADComs.github.io/blob/master/_data/OS.yml
-[`_data/attack_types.yml`]: https://github.com/WADComs/WADComs.github.io/blob/master/_data/attack_types.yml
+[`_wadcoms/`]: https://github.com/arttoolkit/arttoolkit.github.io/tree/master/_wadcoms
+[`_data/services.yml`]: https://github.com/arttoolkit/arttoolkit.github.io/blob/master/_data/services.yml
+[`_data/items.yml`]: https://github.com/arttoolkit/arttoolkit.github.io/blob/master/_data/items.yml
+[`_data/OS.yml`]: https://github.com/arttoolkit/arttoolkit.github.io/blob/master/_data/OS.yml
+[`_data/attack_types.yml`]: https://github.com/arttoolkit/arttoolkit.github.io/blob/master/_data/attack_types.yml
