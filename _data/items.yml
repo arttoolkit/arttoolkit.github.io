@@ -1,0 +1,32 @@
+---
+Username:
+  label: Username
+  description: You've found username(s) and need to know what you can do with them.
+
+Password:
+  label: Password
+  description: You've found password(s) and need to know what you can do with them.
+
+No_Creds:
+  label: No Creds
+  description: You don't have any usernames or passwords and need to know what you can still do.
+
+Hash:
+  label: Hash
+  description: You've found hash(es) and need to know what you can do with them.
+
+TGS:
+  label: TGS
+  description: You've found a user's Ticket Granting Service and need to know what you can do with it.
+  
+TGT:
+  label: TGT
+  description: You've found a user's or computer Ticket Granting Ticket and need to know what you can do with it.
+  
+PFX:
+  label: PFX
+  description: You've found a computer PFX file, which is in a PKCS#12 format, and need to know what you can do with it.
+
+Shell:
+  label: Shell
+  description: You have a shell on the Windows host and need to know what you can do.

@@ -1,0 +1,42 @@
+---
+layout: common
+---
+
+{% capture bin_name %}{% include get_bin_name path=page.path %}{% endcapture %}
+
+{% include page_title.html title=bin_name %}
+
+{% include filter_list.html bin=page %}
+
+{{ page.description | markdownify }}
+
+Command:
+<a href="javascript:void(0)" onClick="copyFunction_com()" style="float: right; margin-bottom: -10px;"><img src="/assets/copy-button.svg" alt="Copy" title="Copy" id="code_img"/></a>
+<ul class="examples">
+    <li>
+	<pre><code id="code_text">{{ page.command | escape }}</code></pre>
+    </li>
+
+</ul>
+
+References:
+<br>
+<br>
+{% for reference in page.references %}
+<a href="{{ reference }}">{{ reference }}</a>
+<br>
+<br>
+{% endfor %}
+<script>
+
+function copyFunction_com() {
+	 var copyCommand = document.getElementById("code_text");
+
+	 navigator.clipboard.writeText(copyCommand.innerText.replace(/\n+$/, "")).then(() => {
+		 document.getElementById("code_img").alt = "Copied";
+		 document.getElementById("code_img").title = "Copied";
+	 }, () => {
+		 console.log("copy failed");
+	 });
+}
+</script>
