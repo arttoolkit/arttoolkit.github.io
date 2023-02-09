@@ -30,3 +30,7 @@ NTLM:
 DNS:
   label: DNS
   description: Command relates to the DNS service.
+
+AV:
+  label: Antivirus
+  description: Command/payload to bypass AV/AMSI.
