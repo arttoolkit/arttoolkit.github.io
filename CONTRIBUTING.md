@@ -6,7 +6,8 @@ The full syntax is the following:
 
 ```
 ---
-description: Description of what the command does.
+description: |
+  Description of what the command does.
 
   Command Reference:
 
@@ -39,13 +40,13 @@ references:
 ---
 ```
 
-Where `ITEM` is one of the values described in the [`_data/items.yml`] file, `SERVICE` is one of the values described in the [`_data/services.yml`] file, `OS` is one of the values described in the [`_data/OS.yml`] file, `ATTACK_TYPE` is one of the values described in the [`_data/attack_types.yml`] file, and `LINK` is a link to download the related tool for that command as well as links to any other relevant information about what the command is doing. 
+Where `ITEM` is one of the values described in the [`_data/items.yml`] file, `SERVICE` is one of the values described in the [`_data/services.yml`] file, `OS` is one of the values described in the [`_data/OS.yml`] file, `ATTACK_TYPE` is one of the values described in the [`_data/attack_types.yml`] file, and `LINK` is a link to download the related tool for that command as well as links to any other relevant information about what the command is doing.
 
 Feel free to use any file in the [`_wadcoms/`] folder as an example.
 
 ## Pull request process
 
-I accept commands that run on either Linux or Windows, just as long as they target Windows machines (this is a Windows/AD cheat sheet after all). 
+I accept commands that run on either Linux or Windows, just as long as they target Windows machines (this is a Windows/AD cheat sheet after all).
 
 Before sending a pull request of a new command, ensure the following:
 
