@@ -99,7 +99,7 @@ OS:
 attack_types:
     - Persistence
 references:
-    - https://ppn.snovvcrash.rocks/red-team/maldev/code-injection/process-injectors#c-dll-via-win32-api
+    - https://ppn.snovvcrash.rocks/red-team/maldev/code-injection/shellcode-runners#c-dll-with-powershell-cradle-in-memory
 --- 
 
 
