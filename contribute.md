@@ -18,9 +18,9 @@ description: |
 
   	Domain: arttoolkit.hacker.com
 
-    Port: 9001
+  	Port: 9001
 
-    IP address: 10.10.21.14
+  	IP address: 10.10.21.14
 
 command: |
   put command here
