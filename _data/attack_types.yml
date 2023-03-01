@@ -8,7 +8,7 @@ Exploitation:
   description: Command focuses on exploitation.
 
 Persistence:
-  label: Lateral Movement
+  label: Persistence
   description: Command focuses on persistence.
 
 PrivEsc:
