@@ -6,6 +6,10 @@ description: |
 
   	File to copy: linpeas.sh
 
+    Port: 9001
+
+    IP address: 10.10.21.14
+
 command: |
   nc -lvnp 9001 < linpeas.sh
 
