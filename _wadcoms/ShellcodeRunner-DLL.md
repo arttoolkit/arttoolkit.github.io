@@ -89,7 +89,7 @@ code: |
 items:
     - Shell
 services:
-    - AV
+    - Injection
 OS:
     - Windows
 attack_types:
