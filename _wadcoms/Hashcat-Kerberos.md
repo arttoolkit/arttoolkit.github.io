@@ -1,6 +1,6 @@
 ---
 description: |
-  Description what the command does and is usefull for.
+  The command hashcat is a password recovery tool that allows for the cracking of various types of password hashes. The goal of the command is to attempt to crack the password hash (Kerberos) using a list of common passwords from the rockyou wordlist.
 
   Command Reference:
   ```

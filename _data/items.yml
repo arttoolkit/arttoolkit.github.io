@@ -11,6 +11,10 @@ No_Creds:
   label: No Creds
   description: You don't have any usernames or passwords and need to know what you can still do.
 
+SSH_key:
+  label: SSH Key
+  description: You've found a SSH private key and need to know what you can do with it.
+
 Hash:
   label: Hash
   description: You've found hash(es) and need to know what you can do with them.

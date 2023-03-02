@@ -23,6 +23,10 @@ LDAP:
   label: LDAP
   description: You've found the LDAP service open and need to know what you can do with it.
 
+SSH:
+  label: SSH
+  description: You've found the SSH service open and need to know what you can do with it.
+
 NTLM:
   label: NTLM
   description: Command relates to the NTLM protocol.
