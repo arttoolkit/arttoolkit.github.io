@@ -22,12 +22,13 @@ code: |
 items:
   - Shell
 services:
-  - Injection
+  - 
 OS:
   - Windows
 attack_types:
   - PrivEsc
   - Persistence
+  - Injection
 references:
   - https://learn.microsoft.com/en-us/dotnet/api/system.net.webclient.downloaddata?view=net-7.0
 ---

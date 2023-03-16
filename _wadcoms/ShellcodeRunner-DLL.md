@@ -89,11 +89,12 @@ code: |
 items:
     - Shell
 services:
-    - Injection
+    - 
 OS:
     - Windows
 attack_types:
     - Persistence
+    - Injection
 references:
     - https://ppn.snovvcrash.rocks/red-team/maldev/code-injection/shellcode-runners#c-dll-with-powershell-cradle-in-memory
 --- 

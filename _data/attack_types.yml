@@ -21,4 +21,13 @@ General:
 
 Cracking:
   label: Cracking
-  description: Commans to help you cracking all kinds of stuff.
+  description: Command to help you cracking all kinds of stuff.
+
+Injection:
+  label: Injection
+  description: Command/payload to inject stuff into victim.
+
+Bypassing:
+  label: Bypassing
+  description: Command/code that supports bypassing antivirus or AMSI.
+

@@ -37,8 +37,4 @@ DNS:
 
 AV:
   label: Antivirus
-  description: Command/payload to bypass AV/AMSI.
-
-Injection:
-  label: Injection
-  description: Command/payload to inject stuff into victim.
+  description: Command/payload relates to bypass AV/AMSI.
