@@ -1,6 +1,6 @@
 ---
 description: |
-  Shellrunner in a VBA macro can be used inside a Office product. This code make use of encrypted shellcode with XOR and has a Sleep function which ensures that it is not tested against an AV emulator.
+  Shellcode runner in a VBA macro can be used inside a Office product. This code make use of encrypted shellcode with XOR and has a Sleep function which ensures that it is not tested against an AV emulator.
 
   Command Reference:
 
@@ -8,7 +8,7 @@ description: |
 
 
 command: |
-    Shellcode for VBA in Office products
+    VBA ShellcodeRunner macro to use in Office products
 
 code: |
     Private Declare PtrSafe Function VirtualAlloc Lib "kernel32" (ByVal lpAddress As LongPtr, ByVal dwSize As Long, ByVal flAllocationType As Long, ByVal flProtect As Long) As LongPtr
