@@ -26,7 +26,7 @@ code: |
       sh.Run("cscript -e:{F414C262-6AC0-11CF-B6D1-00AA00BBBB58}"+WScript.ScriptFullName,0,1); 
       sh.RegWrite(key, 1, "REG_DWORD");
       WScript.Quit(1);
-}
+  }
 
 items:
   - Shell
