@@ -44,5 +44,5 @@ ADCS:
   description: Command/payload relates to Active Directory Certificate Services.
 
 Web:
-  Label:
+  Label: Web
   description: Command/payload relates to webservers.
