@@ -40,6 +40,7 @@ items:
   - Password
 services:
   - LDAP
+  - ADCS
 OS:
   - Windows
 attack_types:

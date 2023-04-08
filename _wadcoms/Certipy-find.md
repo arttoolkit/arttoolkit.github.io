@@ -14,25 +14,19 @@ command: |
   certipy find -u e.black -p ypOSJXPqlDOxxbQSfEERy300 -dc-ip 10.129.239.91
 
 code: |
-  positional arguments:
-  {account,auth,ca,cert,find,forge,ptt,relay,req,shadow,template}
-                        Action
-    account             Manage user and machine accounts
-    auth                Authenticate using certificates
-    ca                  Manage CA and certificates
-    cert                Manage certificates and private keys
-    find                Enumerate AD CS
-    forge               Create Golden Certificates
-    ptt                 Inject TGT for SSPI authentication
-    relay               NTLM Relay to AD CS HTTP Endpoints
-    req                 Request certificates
-    shadow              Abuse Shadow Credentials for account takeover
-    template            Manage certificate templates 
+    Check following properties in templates, makes them vulnerable for ESC1.
+
+    Client Authentication               : True
+    Enrollment Agent                    : True
+    Any Purpose                         : True
+    Enrollee Supplies Subject           : True
+    Certificate Name Flag               : EnrolleeSuppliesSubject
 
 items:
   - Username
   - Password
 services:
+  - ADCS
   - LDAP
 OS:
   - Windows

@@ -38,3 +38,11 @@ DNS:
 AV:
   label: Antivirus
   description: Command/payload relates to bypass AV/AMSI.
+
+ADCS:
+  label: ADCS
+  description: Command/payload relates to Active Directory Certificate Services.
+
+Web:
+  Label:
+  description: Command/payload relates to webservers.
