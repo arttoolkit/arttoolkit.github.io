@@ -10,11 +10,15 @@ description: |
 
   	Password: password123
 
+  	Hash (-H):  807726fcf9f188adc26eeafd7dc16bb7
+
+
 command: |
   crackmapexec ldap 10.10.10.1 -u 'john' -p 'password123' --trusted-for-delegation  --password-not-required --admin-count --users --groups
 items:
   - Username
   - Password
+  - Hash
 services:
   - LDAP
 attack_types:

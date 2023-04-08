@@ -10,15 +10,19 @@ description: |
 
   	Password: password123
 
+  	Hash (-H):  807726fcf9f188adc26eeafd7dc16bb7
+
 command: |
-  crackmapexec smb 10.10.10.1 -u 'john' -p 'password123' -X '$Host'
+  crackmapexec smb 10.10.10.1 -u 'john' -p 'password123' -X 'whoami'
 items:
   - Username
   - Password
+  - Hash
 services:
   - SMB
 attack_types:
   - Exploitation
+  - Persistence
 OS:
   - Linux
 references:

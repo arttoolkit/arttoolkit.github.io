@@ -10,11 +10,14 @@ description: |
 
   	Password: password123
 
+  	Hash (-H):  807726fcf9f188adc26eeafd7dc16bb7
+
 command: |
   evil-winrm -i 10.10.10.1 -u john -p password123
 items:
   - Password
   - Username
+  - Hash
 services:
   - WMI
 OS:
@@ -22,6 +25,7 @@ OS:
   - Windows
 attack_types:
   - Exploitation
+  - Persistence
 references:
   - https://github.com/Hackplayers/evil-winrm
 ---

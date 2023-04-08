@@ -12,6 +12,10 @@ description: |
 
 command: |
   evil-winrm -i 10.10.10.1 -c pub.pem -k priv.pem -S -r EVILCORP
+
+code: |
+  openssl pkcs12 -in certificate.pfx -out certificate.pem -clcerts
+
 items:
   - PFX
 services:

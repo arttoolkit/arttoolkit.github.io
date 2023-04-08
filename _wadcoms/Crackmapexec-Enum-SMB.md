@@ -10,11 +10,14 @@ description: |
 
   	Password: password123
 
+  	Hash (-H):  807726fcf9f188adc26eeafd7dc16bb7
+
 command: |
   crackmapexec smb 10.10.10.1 -u 'john' -p 'password123' --groups --local-groups --loggedon-users --rid-brute --sessions --users --shares --pass-pol
 items:
   - Username
   - Password
+  - Hash
 services:
   - SMB
 attack_types:
