@@ -14,7 +14,7 @@ description: |
 command: |
   crackmapexec smb flight.htb -u svc_apache -p 'test123' --users
 
-co de: |
+code: |
   This below command can be used to check for reused passwords, on other users in the users.txt
 
   crackmapexec smb flight.htb -u users.txt -p 'test123' --continue-on-success
