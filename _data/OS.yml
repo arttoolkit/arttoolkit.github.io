@@ -6,3 +6,7 @@ Linux:
 Windows:
   label: Windows
   description: Command can be run on Windows.
+
+Mac:
+  label: Mac
+  description: Command can be run on Mac.

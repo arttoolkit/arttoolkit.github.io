@@ -19,12 +19,10 @@ items:
   - Shell
   - Username
   - Password
-services:
-  - 
 OS:
   - Windows
 attack_types:
-  - Persistance
+    - Persistence
 references:
   - https://counihan.co.za/blog/Using-RunAs-from-PowerShell/
 ---

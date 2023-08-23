@@ -12,6 +12,7 @@ description: |
 
   -Credential: If you need to run the process with different credentials, you can provide a PSCredential object using this parameter. You can create a PSCredential object with the Get-Credential cmdlet.
   ```
+
 command: |
   Start-Process 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell_ise.exe' -Credential 'domain.local\mmaas'
 
@@ -19,12 +20,16 @@ items:
   - Shell
   - Username
   - Password
+
 services:
   - 
+
 OS:
   - Windows
+
 attack_types:
   - Persistance
+
 references:
   - https://counihan.co.za/blog/Using-RunAs-from-PowerShell/
 ---
