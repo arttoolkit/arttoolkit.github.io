@@ -14,7 +14,6 @@ description: |
   ```
 command: |
   runas /netonly /user:domain.local\mmaas powershell_ise.exe
-
 items:
   - Shell
   - Username
@@ -22,7 +21,7 @@ items:
 OS:
   - Windows
 attack_types:
-    - Persistence
+  - Persistence
 references:
   - https://counihan.co.za/blog/Using-RunAs-from-PowerShell/
 ---

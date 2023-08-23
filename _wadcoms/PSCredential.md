@@ -14,8 +14,6 @@ command: |
   $Cred = New-Object System.Management.Automation.PSCredential('htb.local\mmaas', $pass)
 items:
   - Shell
-services:
-
 OS:
   - Windows
 attack_types:

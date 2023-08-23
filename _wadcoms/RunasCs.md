@@ -23,7 +23,7 @@ OS:
   - Windows
 attack_types:
   - Exploitation
-  - Persistance
+  - Persistence
 references:
   - https://github.com/antonioCoco/RunasCs
 ---
