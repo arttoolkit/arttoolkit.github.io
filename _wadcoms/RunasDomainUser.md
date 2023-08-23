@@ -24,7 +24,6 @@ services:
 OS:
   - Windows
 attack_types:
-  - Exploitation
   - Persistance
 references:
   - https://counihan.co.za/blog/Using-RunAs-from-PowerShell/
