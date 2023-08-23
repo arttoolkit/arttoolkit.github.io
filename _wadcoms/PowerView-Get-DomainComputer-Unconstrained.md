@@ -16,4 +16,5 @@ attack_types:
   - Enumeration
 references:
   - https://powersploit.readthedocs.io/en/latest/Recon/Get-DomainComputer/
+  - https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1
 ---

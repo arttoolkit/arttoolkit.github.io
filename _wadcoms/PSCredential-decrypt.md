@@ -3,10 +3,11 @@ description: |
   PSCredential is a PowerShell cmdlet used to create a credential object. It is used to securely store and retrieve usernames and passwords in scripts or commands. Via the GetNetworkCredential method it is possible to retrieve the password.  
 
   Command Reference:
-
+  ```
   	Variable name: $cred
 
     Method: GetNetworkCredential
+  ```
 
 command: |
   $cred.GetNetworkCredential().Password
