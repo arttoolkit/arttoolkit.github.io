@@ -50,3 +50,11 @@ ADCS:
 Web:
   label: Web
   description: Command/payload relates to webservers.
+
+RMI:
+  label: RMI
+  description: Command/payload relates to Java Remote Method Invocation (RMI).
+
+RDP:
+  label: RDP
+  description: Command/payload relates to Remote Desktop Protocol (RDP).

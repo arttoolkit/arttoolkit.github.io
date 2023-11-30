@@ -10,6 +10,8 @@ code: |
 
 items:
   - Shell
+services:
+  - LDAP
 OS:
   - Windows
 attack_types:

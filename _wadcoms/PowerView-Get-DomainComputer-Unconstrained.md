@@ -10,6 +10,8 @@ code: |
 
 items:
   - Shell
+services:
+  - LDAP
 OS:
   - Windows
 attack_types:
@@ -17,4 +19,5 @@ attack_types:
 references:
   - https://powersploit.readthedocs.io/en/latest/Recon/Get-DomainComputer/
   - https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1
+  - https://dirkjanm.io/krbrelayx-unconstrained-delegation-abuse-toolkit/
 ---
