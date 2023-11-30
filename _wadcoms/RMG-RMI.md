@@ -13,9 +13,10 @@ description: |
   ```
 command: |
   java -jar rmg-4.4.1-jar-with-dependencies.jar enum 10.0.0.1 1099 
+
 items:
   - No_Creds
-Services:
+services:
   - RMI
 OS:
   - Windows
