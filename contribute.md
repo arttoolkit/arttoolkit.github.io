@@ -48,7 +48,7 @@ Feel free to use any file in the [`_wadcoms/`] folder as an example.
 
 ## Pull request process
 
-I accept commands that run on either Linux or Windows, just as long as they are usefull for any kind of attacking scenario.
+I accept commands that run on either Linux or Windows, just as long as they are useful for any kind of attacking scenario.
 
 Before sending a pull request of a new command, ensure the following:
 
