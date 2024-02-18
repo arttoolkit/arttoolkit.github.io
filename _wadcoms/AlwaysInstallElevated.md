@@ -12,7 +12,7 @@ command: |
 code: |
   The below registers must be set in order to exploit this vulnerability:
   reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer
-	reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer
+  reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer
 
 items:
   - Shell
