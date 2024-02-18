@@ -438,6 +438,21 @@
     "name": "Impacket-Mimikatz"
   },
   {
+    "description": "Whenever a user runs a command using Powershell, it gets stored into a file that keeps a memory of past commands. This is useful for repeating commands you have used before quickly. If a user runs a command that includes a password directly as part of the Powershell command line, it can later be retrieved by using the following command. Other useful files are also listed in the extra code section\n\nCommand Reference:\n```\n%userprofile%: only works in cmd, for powershell it must be $Env:userprofile\n```\n",
+    "command": "type %userprofile%\\AppData\\Roaming\\Microsoft\\Windows\\PowerShell\\PSReadline\\ConsoleHost_history.txt\n",
+    "code": "Other places with useful information:\n  + C:\\Unattend.xml\n  + C:\\Windows\\Panther\\Unattend.xml\n  + C:\\Windows\\Panther\\Unattend\\Unattend.xml\n  + C:\\Windows\\system32\\sysprep.inf\n  + C:\\Windows\\system32\\sysprep\\sysprep.xml \n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "name": "powershell-history"
+  },
+  {
     "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. This command will execute a powershell command on the target machine if the user has Administrator privileges. using \"-x\" will execute from cmd.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: john\n\n\tPassword: password123\n\n\tHash (-H):  807726fcf9f188adc26eeafd7dc16bb7\n",
     "command": "crackmapexec smb 10.10.10.1 -u 'john' -p 'password123' -X 'whoami'\n",
     "items": [
@@ -1598,6 +1613,24 @@
       "https://www.ired.team/offensive-security/privilege-escalation/unquoted-service-paths"
     ],
     "name": "sc-misconfiguration"
+  },
+  {
+    "description": "Windows allows to use other users' credentials. This function also gives the option to save these credentials on the system. The command below will list saved credentials. While you can't see the actual passwords, if you notice any credentials worth trying, you can use them with the runas command and the /savecred option, as seen in extra code.\n",
+    "command": "cmdkey /list\n",
+    "code": "runas /savecred /user:admin cmd.exe \n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmdkey"
+    ],
+    "name": "cmdkey"
   },
   {
     "description": "Impacket's reg.py is a remote registry manipulation tool, providing similar functionality to reg.exe in Windows.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
