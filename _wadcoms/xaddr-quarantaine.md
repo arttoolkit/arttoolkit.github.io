@@ -10,10 +10,7 @@ description: |
   ```
 command: |
   xattr -d com.apple.quarantine Bloodhound.app
-
-code: |
-  extra code can be placed here. This part is optional and can be removed if not nessasary. 
-
+ 
 items:
   - Shell
 services:
