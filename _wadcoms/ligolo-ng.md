@@ -7,6 +7,8 @@ description: |
   Port: 8008
 
   IP address to which the agent must connect: 0.0.0.0
+
+  Compromised network you want access to: 172.16.10.0/24
   ```
 command: |
   ligolo-proxy -selfcert -laddr 0.0.0.0:8008
