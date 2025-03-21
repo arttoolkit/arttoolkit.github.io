@@ -72,7 +72,7 @@ code: |
 items:
     - Shell
 services:
-    - 
+    - Antivirus
 OS:
     - Windows
 attack_types:

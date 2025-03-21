@@ -7,7 +7,7 @@ description: |
   Private SSH key: id_rsa
   ```
 command: |
-  sshng2john.py id_rsa
+  python3 ssh2john.py id_rsa.enc > sshkey.john
 
 code: |
   john --wordlist=/opt/wordlists/rockyou.txt sshkey.john
@@ -22,6 +22,6 @@ OS:
 attack_types:
   - Cracking
 references:
-  - https://github.com/truongkma/ctf-tools/blob/master/John/run/sshng2john.py
+  - https://github.com/openwall/john/blob/bleeding-jumbo/run/ssh2john.py
   - https://github.com/Kyuu-Ji/htb-write-up/blob/master/tenten/write-up-tenten.md
 ---

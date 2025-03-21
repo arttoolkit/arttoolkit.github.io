@@ -6,7 +6,7 @@ description: |
 
   Command Reference:
 
-  	Target IP: 10.10.10.1
+  	-ns (target IP / domain controller): 10.10.10.1
 
   	Username: john
 
@@ -14,8 +14,10 @@ description: |
 
   	Domain: test.local
 
+    --hashes: ":NTLM_HASH" (in case of pass the hash)
+
 command: |
-  bloodhound.py -u john -p password123 -d test.local -v --zip -c All -dc test.local -ns 10.10.10.1
+  python3 bloodhound.py -u john -p password123 -d test.local -v -c All -d test.local -ns 10.10.10.1
 items:
   - Username
   - Password
@@ -28,5 +30,5 @@ OS:
   - Windows
 references:
   - https://github.com/BloodHoundAD/BloodHound
-  - https://github.com/fox-it/BloodHound.py
+  - https://github.com/dirkjanm/BloodHound.py
 ---

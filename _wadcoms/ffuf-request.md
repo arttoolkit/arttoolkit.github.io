@@ -4,7 +4,7 @@ description: |
 
   Command Reference:
   ```
-  Burprequest in file: req
+  Burp request in file: req
 
   Protocol: https
 

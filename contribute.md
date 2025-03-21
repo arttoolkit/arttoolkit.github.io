@@ -5,7 +5,7 @@ title: Contribute
 
 ## Structure
 
-Each Red Team Command/code is defined in a file in the [`_wadcoms/`] folder named as `<tool name>.md`, such file consists only of a [YAML] front matter which describes the command and its attributes.
+Each Red Team command/code is defined in a file in the [`_wadcoms/`] folder named as `<tool name>.md`, such file consists only of a [YAML] front matter which describes the command and its attributes.
 
 The full syntax is the following:
 
