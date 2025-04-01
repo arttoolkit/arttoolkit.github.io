@@ -31,6 +31,10 @@ SQL:
   label: SQL
   description: You've found the SQL service open and need to know what you can do with it.
 
+SMTP:
+  label: SMTP
+  description: You've found the SMTP service open and need to know what you can do with it.
+
 NTLM:
   label: NTLM
   description: Command relates to the NTLM protocol.

