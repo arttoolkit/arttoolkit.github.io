@@ -7,6 +7,8 @@ description: |
   c:\tasks\schtask.bat: file you want to see the rights.
 
   /grant: with the /grant parameter you can give additional rights to a file, for example to execute a file
+
+  Everyone:F: gives everyone full (F) access
   ```
 command: |
   icacls c:\tasks\schtask.bat
